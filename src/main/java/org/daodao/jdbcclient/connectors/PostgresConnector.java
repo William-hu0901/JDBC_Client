@@ -25,7 +25,7 @@ public class PostgresConnector {
         Properties props = new Properties();
         props.setProperty("user", username);
         props.setProperty("password", password);
-        //enable ssl, but not mandatory to validate the certificate, seems only in this way can it work when skip the ssl
+        //enable ssl, but not mandatory to validate the certificate
         String url = String.format("jdbc:postgresql://%s:%d/%s?sslmode=prefer", hostname, port, database);
         log.info("Connecting to PostgreSQL database at: {}", url);
         connection = DriverManager.getConnection(url, props);

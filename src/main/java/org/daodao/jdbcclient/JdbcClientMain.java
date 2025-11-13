@@ -5,14 +5,25 @@ import org.daodao.jdbcclient.connectors.PostgresConnector;
 import org.daodao.jdbcclient.util.Constants;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Slf4j
 public class JdbcClientMain {
 
+
     public static void main(String[] args) {
+        new JdbcClientMain().run();
+    }
+
+    private void run() {
+        actionOnPostgres();
+
+    }
+    private void actionOnPostgres() {
+        PostgresConnector postgresConnector = null;
         try {
             // Example usage for PostgreSQL
-            PostgresConnector postgresConnector = new PostgresConnector(
+            postgresConnector = new PostgresConnector(
                     Constants.POSTGRES_HOST,
                     Constants.POSTGRES_PORT,
                     Constants.POSTGRES_DB,
@@ -31,6 +42,9 @@ public class JdbcClientMain {
 
         } catch (Exception e) {
             log.error("Error occurred: ", e);
+        }finally {
+            if(postgresConnector != null) postgresConnector.disconnect();
         }
+
     }
 }
