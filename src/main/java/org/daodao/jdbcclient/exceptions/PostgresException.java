@@ -1,6 +1,6 @@
 package org.daodao.jdbcclient.exceptions;
 
-public class PostgresException extends Exception {
+public class PostgresException extends RuntimeException {
     public PostgresException(String message) {
         super(message);
     }
