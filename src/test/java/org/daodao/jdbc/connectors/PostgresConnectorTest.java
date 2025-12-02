@@ -1,6 +1,6 @@
-package org.daodao.jdbcclient.connectors;
+package org.daodao.jdbc.connectors;
 
-import org.daodao.jdbcclient.config.DatabaseConfig;
+import org.daodao.jdbc.config.DatabaseConfig;
 import org.junit.jupiter.api.*;
 
 import java.sql.ResultSet;

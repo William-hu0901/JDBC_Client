@@ -1,4 +1,4 @@
-package org.daodao.jdbcclient.exceptions;
+package org.daodao.jdbc.exceptions;
 
 public class PropertyException extends RuntimeException {
     public PropertyException(String message) {
