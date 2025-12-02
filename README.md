@@ -86,14 +86,74 @@ src/main/java/org/daodao/jdbc/
 │   └── MongoException.java      # MongoDB exceptions
 └── util/
     └── Constants.java            # Application constants
+
+src/test/java/org/daodao/jdbc/
+├── connectors/
+│   └── PostgresConnectorTest.java   # PostgreSQL integration tests
+└── mongodb/
+    ├── MongoBasicCRUDTest.java       # Basic CRUD operations
+    ├── MongoIndexingAggregationTest.java # Indexing and aggregation
+    ├── MongoTransactionTest.java      # Transaction testing
+    ├── MongoNewFeaturesTest.java       # Latest MongoDB features
+    ├── MongoConnectorMockitoTest.java  # Unit tests with Mockito
+    ├── MongoSimpleTest.java          # Basic infrastructure test
+    └── TestSuite.java               # Test suite orchestrator
 ```
 
 ## Requirements
 - Java 21
-- MongoDB running on localhost:27017
+- MongoDB running on localhost:27017 (for integration tests)
 - Maven for dependency management
 
 ## Running the Application
 ```bash
 mvn compile exec:java -Dexec.mainClass="org.daodao.jdbc.JdbcClientMain"
 ```
+
+## Running Tests
+```bash
+# Run all tests
+mvn test
+
+# Run only MongoDB tests (requires MongoDB running)
+mvn test -Dtest=MongoBasicCRUDTest
+
+# Run only Mockito tests (unit tests, no MongoDB required)
+mvn test -Dtest=MongoConnectorMockitoTest
+
+# Run test suite
+mvn test -Dtest=TestSuite
+```
+
+## MongoDB Test Coverage
+The project includes comprehensive MongoDB tests covering:
+
+### Basic CRUD Operations
+- Single and multiple document insertions
+- Document queries with filters
+- Updates and replacements
+- Document deletion
+- Counting and distinct operations
+
+### Advanced Features
+- Index creation (single, compound, text, unique)
+- Aggregation pipelines (group, sort, limit, project, unwind, lookup)
+- Transaction support with rollback and retry
+- Change streams monitoring
+- Time series collections
+- Wildcard indexes
+- Advanced array update operators
+
+### Testing Strategy
+- **Integration Tests**: Require MongoDB instance, test real database operations
+- **Unit Tests**: Use Mockito for testing business logic without database dependency
+- **Test Suite**: Orchestrates all MongoDB-related tests
+
+### Test Categories
+1. **MongoBasicCRUDTest**: Core MongoDB functionality
+2. **MongoIndexingAggregationTest**: Indexing and aggregation operations
+3. **MongoTransactionTest**: ACID transaction testing
+4. **MongoNewFeaturesTest**: Latest MongoDB production features
+5. **MongoConnectorMockitoTest**: Unit testing with mocked dependencies
+
+Note: Some tests may be skipped if MongoDB features are not available in the running version or if MongoDB is not accessible.
