@@ -27,7 +27,7 @@ class MongoIndexingAggregationTest {
     @BeforeAll
     void setUp() {
         try {
-            mongoClient = MongoClients.create("mongodb://localhost:27017");
+            mongoClient = MongoClients.create("mongodb://localhost:27017/?connectTimeoutMS=5000&serverSelectionTimeoutMS=5000");
             database = mongoClient.getDatabase(TEST_DATABASE);
             collection = database.getCollection(TEST_COLLECTION);
             

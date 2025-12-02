@@ -76,8 +76,11 @@ public class PostgresTransactionTest {
         }
         
         try {
+            String dropTableSQL = "DROP TABLE IF EXISTS transaction_test";
+            connector.delete(dropTableSQL);
+            
             String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS transaction_test (
+                CREATE TABLE transaction_test (
                     id SERIAL PRIMARY KEY,
                     name VARCHAR(100),
                     amount NUMERIC(10,2)
@@ -118,8 +121,11 @@ public class PostgresTransactionTest {
         }
         
         try {
+            String dropTableSQL = "DROP TABLE IF EXISTS transaction_rollback_test";
+            connector.delete(dropTableSQL);
+            
             String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS transaction_rollback_test (
+                CREATE TABLE transaction_rollback_test (
                     id SERIAL PRIMARY KEY,
                     name VARCHAR(100),
                     temp_data VARCHAR(100)
@@ -159,8 +165,11 @@ public class PostgresTransactionTest {
         }
         
         try {
+            String dropTableSQL = "DROP TABLE IF EXISTS savepoint_test";
+            connector.delete(dropTableSQL);
+            
             String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS savepoint_test (
+                CREATE TABLE savepoint_test (
                     id SERIAL PRIMARY KEY,
                     name VARCHAR(100),
                     value INTEGER
@@ -209,8 +218,11 @@ public class PostgresTransactionTest {
         }
         
         try {
+            String dropTableSQL = "DROP TABLE IF EXISTS isolation_test";
+            connector.delete(dropTableSQL);
+            
             String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS isolation_test (
+                CREATE TABLE isolation_test (
                     id SERIAL PRIMARY KEY,
                     data VARCHAR(100),
                     counter INTEGER DEFAULT 0

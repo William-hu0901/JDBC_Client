@@ -150,8 +150,11 @@ public class PostgresNewFeaturesTest {
         }
         
         try {
+            String dropTableSQL = "DROP TABLE IF EXISTS upsert_test";
+            connector.delete(dropTableSQL);
+            
             String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS upsert_test (
+                CREATE TABLE upsert_test (
                     id SERIAL PRIMARY KEY,
                     email VARCHAR(100) UNIQUE,
                     name VARCHAR(100),

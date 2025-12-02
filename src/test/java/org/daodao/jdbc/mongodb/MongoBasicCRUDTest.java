@@ -29,7 +29,7 @@ class MongoBasicCRUDTest {
     @BeforeAll
     void setUp() {
         try {
-            mongoClient = MongoClients.create("mongodb://localhost:27017");
+            mongoClient = MongoClients.create("mongodb://localhost:27017/?connectTimeoutMS=5000&serverSelectionTimeoutMS=5000");
             database = mongoClient.getDatabase(TEST_DATABASE);
             collection = database.getCollection(TEST_COLLECTION);
             
@@ -210,7 +210,9 @@ class MongoBasicCRUDTest {
         
         assertEquals(1, result.getModifiedCount());
         
-        Document replaced = collection.find(filter).first();
+        // Use the new name for finding the replaced document
+        Document replaced = collection.find(Filters.eq("name", "Alice Smith")).first();
+        assertNotNull(replaced);
         assertEquals("Alice Smith", replaced.getString("name"));
         assertEquals("alice@example.com", replaced.getString("email"));
         assertEquals("Engineering", replaced.getString("department"));
