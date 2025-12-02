@@ -1,4 +1,4 @@
-package org.daodao.jdbcclient.exceptions;
+package org.daodao.jdbc.exceptions;
 
 public class PostgresException extends RuntimeException {
     public PostgresException(String message) {

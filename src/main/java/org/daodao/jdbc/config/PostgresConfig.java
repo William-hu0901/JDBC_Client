@@ -1,16 +1,16 @@
-package org.daodao.jdbcclient.config;
+package org.daodao.jdbc.config;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.daodao.jdbcclient.exceptions.PropertyException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.daodao.jdbc.exceptions.PropertyException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-@Slf4j
-@Getter
-public class DatabaseConfig {
+public class PostgresConfig {
+    
+    private static final Logger log = LoggerFactory.getLogger(PostgresConfig.class);
     private static final String PROPERTIES_FILE = "application.properties";
     
     private final String postgresHost;
@@ -20,7 +20,7 @@ public class DatabaseConfig {
     private final String postgresPassword;
     private final String postgresSql;
     
-    public DatabaseConfig() {
+    public PostgresConfig() {
         Properties properties = loadProperties();
         this.postgresHost = getProperty(properties, "postgres.host");
         this.postgresPort = Integer.parseInt(getProperty(properties, "postgres.port"));
@@ -51,5 +51,29 @@ public class DatabaseConfig {
             throw new PropertyException("Required property '" + key + "' is missing or empty in " + PROPERTIES_FILE);
         }
         return value.trim();
+    }
+    
+    public String getPostgresHost() {
+        return postgresHost;
+    }
+    
+    public int getPostgresPort() {
+        return postgresPort;
+    }
+    
+    public String getPostgresDatabase() {
+        return postgresDatabase;
+    }
+    
+    public String getPostgresUsername() {
+        return postgresUsername;
+    }
+    
+    public String getPostgresPassword() {
+        return postgresPassword;
+    }
+    
+    public String getPostgresSql() {
+        return postgresSql;
     }
 }

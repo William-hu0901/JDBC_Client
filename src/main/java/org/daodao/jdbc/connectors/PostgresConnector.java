@@ -1,11 +1,12 @@
-package org.daodao.jdbcclient.connectors;
+package org.daodao.jdbc.connectors;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.Properties;
-
-@Slf4j
 public class PostgresConnector {
+    
+    private static final Logger log = LoggerFactory.getLogger(PostgresConnector.class);
     private final String hostname;
     private final int port;
     private final String database;
