@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class DatabaseConfig {
+public class PostgresConfig {
     
-    private static final Logger log = LoggerFactory.getLogger(DatabaseConfig.class);
+    private static final Logger log = LoggerFactory.getLogger(PostgresConfig.class);
     private static final String PROPERTIES_FILE = "application.properties";
     
     private final String postgresHost;
@@ -20,7 +20,7 @@ public class DatabaseConfig {
     private final String postgresPassword;
     private final String postgresSql;
     
-    public DatabaseConfig() {
+    public PostgresConfig() {
         Properties properties = loadProperties();
         this.postgresHost = getProperty(properties, "postgres.host");
         this.postgresPort = Integer.parseInt(getProperty(properties, "postgres.port"));

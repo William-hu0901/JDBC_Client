@@ -75,7 +75,7 @@ mongodb.collection.name=users
 src/main/java/org/daodao/jdbc/
 ├── JdbcClientMain.java          # Main application entry point
 ├── config/
-│   ├── DatabaseConfig.java      # PostgreSQL configuration
+│   ├── PostgresConfig.java      # PostgreSQL configuration
 │   └── MongoConfig.java         # MongoDB configuration
 ├── connectors/
 │   ├── PostgresConnector.java   # PostgreSQL connection handler

@@ -1,6 +1,6 @@
 package org.daodao.jdbc.connectors;
 
-import org.daodao.jdbc.config.DatabaseConfig;
+import org.daodao.jdbc.config.PostgresConfig;
 import org.junit.jupiter.api.*;
 
 import java.sql.ResultSet;
@@ -12,12 +12,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class PostgresConnectorTest {
 
     private PostgresConnector postgresConnector;
-    private DatabaseConfig config;
+    private PostgresConfig config;
     private static final String TEST_TABLE_NAME = "test_users";
 
     @BeforeAll
     void setUp() throws SQLException {
-        config = new DatabaseConfig();
+        config = new PostgresConfig();
         postgresConnector = new PostgresConnector(
                 config.getPostgresHost(),
                 config.getPostgresPort(),
