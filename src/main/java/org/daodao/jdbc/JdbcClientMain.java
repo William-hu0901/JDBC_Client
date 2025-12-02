@@ -3,7 +3,7 @@ package org.daodao.jdbc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.bson.Document;
-import org.daodao.jdbc.config.DatabaseConfig;
+import org.daodao.jdbc.config.PostgresConfig;
 import org.daodao.jdbc.connectors.MongoConnector;
 import org.daodao.jdbc.connectors.PostgresConnector;
 import org.daodao.jdbc.exceptions.MongoException;
@@ -80,7 +80,7 @@ public class JdbcClientMain {
         PostgresConnector postgresConnector = null;
         try {
             // Load configuration from application.properties
-            DatabaseConfig config = new DatabaseConfig();
+            PostgresConfig config = new PostgresConfig();
             
             // Create PostgreSQL connector using configuration
             postgresConnector = new PostgresConnector(
