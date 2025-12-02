@@ -23,7 +23,7 @@ public class JdbcClientMain {
 
     private void run() {
         try {
-            actionOnMongoDB();
+//            actionOnMongoDB();
             actionOnPostgres();
         } catch (Exception e) {
             log.error("Application error: ", e);
