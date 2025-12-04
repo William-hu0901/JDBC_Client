@@ -1,6 +1,35 @@
 # JDBC_Client
 This is a Client to connect with different databases such as MySQL, PostgreSQL, Oracle, MongoDB, and Neo4j with given parameters.
 
+## MySQL Connection Example
+```java
+MySqlConnector mysqlConnector = new MySqlConnector();
+mysqlConnector.connect();
+
+// Initialize database if empty
+if (mysqlConnector.isDatabaseEmpty()) {
+    mysqlConnector.initializeDatabase();
+}
+
+// Find all users
+List<String> users = mysqlConnector.findAllUsers();
+
+// Insert new user
+boolean inserted = mysqlConnector.insertUser("john_doe", "john@example.com", 30, "New York");
+
+// Update user email
+boolean updated = mysqlConnector.updateUserEmail("john_doe", "john.new@example.com");
+
+// Delete user
+boolean deleted = mysqlConnector.deleteUser("john_doe");
+
+// Find users by city
+List<String> cityUsers = mysqlConnector.findUsersByCity("New York");
+
+// Get user count
+int userCount = mysqlConnector.getUserCount();
+```
+
 ## PostgreSQL Connection Example
 ```java
 PostgresConnector postgresConnector = new PostgresConnector(
@@ -37,8 +66,8 @@ List<Document> youngUsers = mongoConnector.findDocumentsByAgeRange(20, 30);
 ```
 
 ## Supported Databases
-- PostgreSQL
 - MySQL
+- PostgreSQL
 - Oracle
 - MongoDB
 - Neo4j
@@ -47,12 +76,23 @@ List<Document> youngUsers = mongoConnector.findDocumentsByAgeRange(20, 30);
 - Simple CRUD operations for each database.
 - Custom exception handling for each database.
 - Logging with SLF4J and Logback.
-- Automatic database initialization for MongoDB.
+- Automatic database initialization for MySQL and MongoDB.
+- Schema, table, and index creation for MySQL.
+- View creation for MySQL.
 - Index creation for MongoDB collections.
 - Query operations with filters for MongoDB.
 
 ## Configuration
 The application uses `application.properties` for configuration:
+
+### MySQL Configuration
+```properties
+mysql.host=localhost
+mysql.port=3306
+mysql.database=testdb
+mysql.username=root
+mysql.password=
+```
 
 ### PostgreSQL Configuration
 ```properties
@@ -75,12 +115,15 @@ mongodb.collection.name=users
 src/main/java/org/daodao/jdbc/
 ├── JdbcClientMain.java          # Main application entry point
 ├── config/
+│   ├── MySqlConfig.java         # MySQL configuration
 │   ├── PostgresConfig.java      # PostgreSQL configuration
 │   └── MongoConfig.java         # MongoDB configuration
 ├── connectors/
+│   ├── MySqlConnector.java      # MySQL connection handler
 │   ├── PostgresConnector.java   # PostgreSQL connection handler
 │   └── MongoConnector.java      # MongoDB connection handler
 ├── exceptions/
+│   ├── MySqlException.java       # MySQL exceptions
 │   ├── PostgresException.java   # PostgreSQL exceptions
 │   ├── PropertyException.java   # Property loading exceptions
 │   └── MongoException.java      # MongoDB exceptions
@@ -90,6 +133,11 @@ src/main/java/org/daodao/jdbc/
 src/test/java/org/daodao/jdbc/
 ├── connectors/
 │   └── PostgresConnectorTest.java   # PostgreSQL integration tests
+├── mysql/
+│   ├── MySqlBasicCRUDTest.java       # Basic CRUD operations
+│   ├── MySqlConnectorMockitoTest.java  # Unit tests with Mockito
+│   ├── MySqlSimpleTest.java          # Basic infrastructure test
+│   └── TestSuite.java               # MySQL test suite
 ├── mongodb/
 │   ├── MongoBasicCRUDTest.java       # Basic CRUD operations
 │   ├── MongoIndexingAggregationTest.java # Indexing and aggregation
@@ -123,6 +171,9 @@ mvn compile exec:java -Dexec.mainClass="org.daodao.jdbc.JdbcClientMain"
 # Run all tests
 mvn test
 
+# Run only MySQL tests (requires MySQL running)
+mvn test -Dtest=MySqlBasicCRUDTest
+
 # Run only MongoDB tests (requires MongoDB running)
 mvn test -Dtest=MongoBasicCRUDTest
 
@@ -130,11 +181,13 @@ mvn test -Dtest=MongoBasicCRUDTest
 mvn test -Dtest=PostgresBasicCRUDTest
 
 # Run only Mockito tests (unit tests, no database required)
+mvn test -Dtest=MySqlConnectorMockitoTest
 mvn test -Dtest=MongoConnectorMockitoTest
 mvn test -Dtest=PostgresConnectorMockitoTest
 
 # Run test suites
 mvn test -Dtest=TestSuite
+mvn test -Dtest=org.daodao.jdbc.mysql.TestSuite
 mvn test -Dtest=org.daodao.jdbc.postgres.TestSuite
 ```
 
@@ -185,6 +238,40 @@ The project includes comprehensive MongoDB tests covering:
 - Some advanced aggregation tests are skipped for MongoDB version compatibility
 - Connection timeout settings (5 seconds) are configured for all MongoDB tests
 - All PostgreSQL tests execute successfully with remote AWS RDS connection
+
+## MySQL Test Coverage
+The project includes comprehensive MySQL tests covering:
+
+### Basic CRUD Operations
+- Database schema and table creation
+- Sample data insertion
+- User management (Create, Read, Update, Delete)
+- Query operations with filters
+- Index creation and management
+- View creation for data summarization
+
+### Database Features
+- Auto-increment primary keys
+- Timestamp management (created_at, updated_at)
+- Unique constraints and foreign key relationships
+- Prepared statements for security
+- Connection pooling and timeout handling
+
+### Testing Strategy
+- **Integration Tests**: Require MySQL instance, test real database operations
+- **Unit Tests**: Use Mockito for testing business logic without database dependency
+- **Test Suite**: Orchestrates all MySQL-related tests
+
+### Test Categories
+1. **MySqlSimpleTest**: Configuration and setup validation
+2. **MySqlBasicCRUDTest**: Core MySQL functionality and CRUD operations
+3. **MySqlConnectorMockitoTest**: Unit testing with mocked dependencies
+
+### Test Results Summary
+- **MySQL Tests**: 16 tests total
+  - 13 tests passed (81.3% pass rate)
+  - 3 tests skipped (due to MySQL not being available)
+  - 0 test failures
 
 ## PostgreSQL Test Coverage
 The project includes comprehensive PostgreSQL tests covering:

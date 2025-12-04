@@ -9,7 +9,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.daodao.jdbc.config.MongoConfig;
 import org.daodao.jdbc.exceptions.MongoException;
-import org.daodao.jdbc.util.Constants;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

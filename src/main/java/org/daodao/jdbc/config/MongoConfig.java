@@ -1,6 +1,8 @@
 package org.daodao.jdbc.config;
 
-import org.daodao.jdbc.util.Constants;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class MongoConfig {
     
@@ -9,9 +11,19 @@ public class MongoConfig {
     private final String collectionName;
     
     public MongoConfig() {
-        this.connectionString = Constants.MONGODB_CONNECTION_STRING;
-        this.databaseName = Constants.MONGODB_DATABASE_NAME;
-        this.collectionName = Constants.MONGODB_COLLECTION_NAME;
+        Properties props = new Properties();
+        try (InputStream input = MongoConfig.class.getClassLoader().getResourceAsStream("application.properties")) {
+            if (input == null) {
+                throw new RuntimeException("Unable to find application.properties");
+            }
+            props.load(input);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load application.properties", e);
+        }
+        
+        this.connectionString = props.getProperty("mongodb.connection.string");
+        this.databaseName = props.getProperty("mongodb.database.name");
+        this.collectionName = props.getProperty("mongodb.collection.name");
     }
     
     public MongoConfig(String connectionString, String databaseName, String collectionName) {
