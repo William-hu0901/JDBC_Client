@@ -196,7 +196,13 @@ src/test/java/org/daodao/jdbc/
 │   ├── MongoSimpleTest.java          # Basic infrastructure test
 │   └── TestSuite.java               # Test suite orchestrator
 ├── neo4j/
-│   └── Neo4jCRUDTest.java            # Neo4j CRUD operations testing
+│   ├── Neo4jCRUDTest.java           # Legacy Neo4j CRUD operations testing
+│   ├── Neo4jBasicFunctionalityTest.java # Comprehensive basic functionality tests
+│   ├── Neo4jNewFeaturesTest.java     # Latest Neo4j production features
+│   ├── Neo4jMockitoTest.java        # Unit tests with Mockito (disabled due to compatibility)
+│   ├── Neo4jMockitoSimpleTest.java  # Java21 compatible Mockito tests
+│   ├── Neo4jTestSuite.java         # Main test suite with logging
+│   └── Neo4jTestRunner.java         # Simple test runner
 └── postgres/
     ├── PostgresBasicCRUDTest.java    # Basic CRUD operations
     ├── PostgresIndexingTest.java     # Index creation and management
@@ -208,10 +214,11 @@ src/test/java/org/daodao/jdbc/
 ```
 
 ## Requirements
-- Java 21
+- Java 21 (configured at D:\Java\jdk-21)
 - MongoDB running on localhost:27017 (for integration tests)
 - Neo4j running on localhost:7687 (for integration tests)
 - Maven for dependency management
+- Maven toolchains configuration (included)
 
 ## Running the Application
 
@@ -221,8 +228,8 @@ mvn compile exec:java -Dexec.mainClass="org.daodao.jdbc.JdbcClientMain"
 mvn compile exec:java -Dexec.mainClass="org.daodao.jdbc.Neo4jMainApplication"
 ```
 
-### Option 2: Using Batch Script
-For Windows users, a convenient batch script is provided:
+### Option 2: Using Batch Scripts
+For Windows users, convenient batch scripts are provided:
 
 1. **Neo4j Application Script** (`run_neo4j_test.bat`):
    ```batch
@@ -239,16 +246,50 @@ epository\ch\qos\logback\logback-core\1.2.6\logback-core-1.2.6.jar" org.daodao.j
    pause
    ```
 
-2. **Usage**:
-   - Simply double-click `run_neo4j_test.bat` to run the Neo4j application
-   - The script automatically compiles and executes the Neo4jMainApplication
+2. **Java21 Toolchain Script** (`run_neo4j_test_java21.bat`):
+   ```batch
+   @echo off
+   echo Running Neo4j Test Cases with Java21 Toolchain...
+   echo Setting JAVA_HOME to Java21...
+   set JAVA_HOME=D:\Java\jdk-21
+   set PATH=%JAVA_HOME%\bin;%PATH%
+   
+   echo Java Version:
+   java -version
+   
+   echo Compiling with Java21 Toolchain...
+   call mvn clean compile -T 1C
+   
+   echo Running Neo4j Test Suite with Java21...
+   call mvn test -Dmaven.test.failure.ignore=true -DskipTests=false -B
+   
+   pause
+   ```
+
+3. **Usage**:
+   - **Basic Script**: Double-click `run_neo4j_test.bat` to run the Neo4j application
+   - **Java21 Toolchain**: Double-click `run_neo4j_test_java21.bat` for Java21 with toolchain support
+   - Both scripts automatically compile and execute the appropriate components
    - Required JAR dependencies are included in the classpath
    - The console window remains open after execution (useful for viewing output)
 
-3. **Prerequisites for the Script**:
+4. **Prerequisites for the Scripts**:
    - Ensure the project is compiled first: `mvn compile`
    - Neo4j server must be running on localhost:7687
    - Maven dependencies should be downloaded: `mvn dependency:resolve`
+   - Java21 must be installed at D:\Java\jdk-21 for toolchain script
+
+### Option 3: Using Maven Toolchains
+```bash
+# Use Java21 toolchain for all operations
+mvn -Dtoolchain.skip=false clean compile test
+
+# Verify toolchain configuration
+mvn toolchain:toolchain
+
+# Run specific tests with toolchain
+mvn -Dtoolchain.skip=false test -Dtest=Neo4jTestSuite
+```
 
 ## Running Tests
 ```bash
@@ -265,7 +306,10 @@ mvn test -Dtest=MongoBasicCRUDTest
 mvn test -Dtest=PostgresBasicCRUDTest
 
 # Run only Neo4j tests (requires Neo4j running)
-mvn test -Dtest=Neo4jCRUDTest
+mvn test -Dtest=Neo4jTestSuite
+mvn test -Dtest=Neo4jBasicFunctionalityTest
+mvn test -Dtest=Neo4jNewFeaturesTest
+mvn test -Dtest=Neo4jMockitoSimpleTest
 
 # Run only Mockito tests (unit tests, no database required)
 mvn test -Dtest=MySqlConnectorMockitoTest
@@ -417,62 +461,88 @@ The project includes comprehensive PostgreSQL tests covering:
 - **Data Management**: Tests include proper cleanup to avoid data accumulation
 
 ## Neo4j Test Coverage
-The project includes comprehensive Neo4j tests covering:
+The project includes comprehensive Neo4j tests using Java21 with Maven toolchains:
 
-### Basic CRUD Operations
-- Movie and Person node creation
-- Relationship creation (ACTED_IN, DIRECTED)
-- Node and relationship queries
-- Data updates and deletions
-- Complex graph traversals
+### Basic Functionality Tests
+- Node creation and retrieval operations
+- Relationship management (ACTED_IN, DIRECTED)
+- Graph traversal and path finding
+- Data updates and deletions with transaction handling
+- Complex Cypher queries with filtering and aggregation
+
+### New Features Tests
+- Multi-database operations and switching
+- Advanced Cypher features (subqueries, pattern comprehensions)
+- Index and constraint management
+- Transaction management with multiple operations
+- Performance optimization queries
 
 ### Database Features
 - Constraints for unique properties
-- Indexes on multiple properties
-- Graph database initialization
+- Indexes on multiple properties for performance
+- Graph database initialization with sample data
 - Schema creation and management
-- Cypher query execution
+- Proper transaction handling and rollback
 
 ### Testing Strategy
 - **Integration Tests**: Require Neo4j instance, test real database operations
-- **Unit Tests**: Focused on testing service layer functionality
-- **Data Initialization**: Automatic database setup with sample data
+- **Unit Tests**: Use Mockito for service layer testing (disabled due to Java compatibility)
+- **Test Suite**: Comprehensive test orchestration with logging
+- **Simplified Tests**: Focus on functionality demonstration over complexity
 
 ### Test Categories
-1. **Neo4jCRUDTest**: Core Neo4j functionality and CRUD operations
+1. **Neo4jCRUDTest**: Legacy Neo4j CRUD operations testing
+2. **Neo4jBasicFunctionalityTest**: Comprehensive basic functionality tests (15+ test cases)
+3. **Neo4jNewFeaturesTest**: Latest Neo4j production features (10+ test cases)
+4. **Neo4jMockitoSimpleTest**: Java21 compatible Mockito unit tests (10+ test cases)
+5. **Neo4jTestSuite**: Main test suite with comprehensive logging and orchestration
+6. **Neo4jTestRunner**: Simple test runner for quick execution
 
 ### Neo4j Features Tested
 - **Node Operations**: Create, read, update, delete nodes with properties
 - **Relationship Operations**: Create and query relationships between nodes
 - **Indexing**: Property indexes for performance optimization
 - **Constraints**: Unique constraints for data integrity
-- **Cypher Queries**: Complex queries with filtering and aggregation
-- **Graph Traversals**: Navigation through relationships
+- **Cypher Queries**: Complex queries with filtering, aggregation, and subqueries
+- **Graph Traversals**: Navigation through relationships with path finding
+- **Transaction Management**: Proper transaction handling with rollback capabilities
 - **Data Modeling**: Movie database with actors and directors
+- **New Features**: Multi-database support, advanced pattern matching
 
 ### Sample Data
 The Neo4j tests include comprehensive sample data:
-- **Movies**: 5 sample movies with various genres and years
+- **Movies**: Sample movies with various genres, years, and descriptions
 - **Actors**: Multiple actors with birth years and nationalities
 - **Directors**: Directors with their respective filmographies
 - **Relationships**: ACTED_IN and DIRECTED relationships connecting the data
 
 ### Test Results
-- **Neo4j Tests**: 10+ tests covering all CRUD operations
-- **Pass Rate**: 100% for successful Neo4j connections
+- **Total Neo4j Tests**: 25+ tests across multiple test classes
+- **Pass Rate**: High success rate for proper Neo4j connections
 - **Graceful Handling**: Tests handle connection failures appropriately
 - **Cleanup**: Proper teardown to avoid test data accumulation
+- **Retry Logic**: Failed tests are skipped after 6 attempts per requirement
 
-### Running Neo4j Application
+### Running Neo4j Tests with Java21 Toolchain
 ```bash
-# Run the Neo4j main application
-mvn compile exec:java -Dexec.mainClass="org.daodao.jdbc.Neo4jMainApplication"
+# Run all Neo4j tests with Java21 toolchain
+mvn test -Dtest=Neo4jTestSuite -Dtoolchain.skip=false
 
-# Run Neo4j tests only
-mvn test -Dtest=Neo4jCRUDTest
+# Run specific test classes
+mvn test -Dtest=Neo4jBasicFunctionalityTest -Dtoolchain.skip=false
+mvn test -Dtest=Neo4jNewFeaturesTest -Dtoolchain.skip=false
+mvn test -Dtest=Neo4jMockitoSimpleTest -Dtoolchain.skip=false
+
+# Use the Java21 batch script
+run_neo4j_test_java21.bat
+
+# Quick test runner
+mvn test -Dtest=Neo4jTestRunner -Dtoolchain.skip=false
 ```
 
 ### Neo4j Connection Prerequisites
 - Neo4j server running on localhost:7687
+- Java21 installed at D:\Java\jdk-21 (for toolchain support)
 - Username: neo4j, Password: configured in application.properties
 - Database: neo4j (default database)
+- Maven toolchains configuration (toolchains.xml included)
