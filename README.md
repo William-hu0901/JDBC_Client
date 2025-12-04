@@ -65,6 +65,36 @@ boolean updated = mongoConnector.updateDocumentByEmail("user@example.com", "New 
 List<Document> youngUsers = mongoConnector.findDocumentsByAgeRange(20, 30);
 ```
 
+## Neo4j Connection Example
+```java
+// Configuration
+Neo4jConfig config = new Neo4jConfig();
+Neo4jConnector connector = new Neo4jConnector(config);
+
+// Initialize database if empty
+Neo4jDatabaseInitializer initializer = new Neo4jDatabaseInitializer(connector);
+Neo4jMovieService movieService = new Neo4jMovieService(connector);
+initializer.initializeDatabase();
+
+// CRUD operations
+Movie movie = new Movie("Inception", 2010, "Science Fiction", "A thief enters dreams");
+movieService.createMovie(movie);
+
+// Add relationships
+movieService.addActor("Inception", "Leonardo DiCaprio");
+movieService.addDirector("Inception", "Christopher Nolan");
+
+// Query operations
+List<Movie> allMovies = movieService.getAllMovies();
+List<Person> actors = movieService.getActorsInMovie("Inception");
+List<Movie> actorMovies = movieService.getMoviesByActor("Leonardo DiCaprio");
+
+// Update and delete
+Movie updated = new Movie("Inception", 2010, "Thriller", "Updated description");
+movieService.updateMovie("Inception", updated);
+movieService.deleteMovie("Inception");
+```
+
 ## Supported Databases
 - MySQL
 - PostgreSQL
@@ -110,23 +140,40 @@ mongodb.database.name=testdb
 mongodb.collection.name=users
 ```
 
+### Neo4j Configuration
+```properties
+neo4j.uri=bolt://localhost:7687
+neo4j.username=neo4j
+neo4j.password=your_password
+neo4j.database=neo4j
+```
+
 ## Project Structure
 ```
 src/main/java/org/daodao/jdbc/
 ├── JdbcClientMain.java          # Main application entry point
+├── Neo4jMainApplication.java    # Neo4j application entry point
 ├── config/
 │   ├── MySqlConfig.java         # MySQL configuration
 │   ├── PostgresConfig.java      # PostgreSQL configuration
-│   └── MongoConfig.java         # MongoDB configuration
+│   ├── MongoConfig.java         # MongoDB configuration
+│   └── Neo4jConfig.java         # Neo4j configuration
 ├── connectors/
 │   ├── MySqlConnector.java      # MySQL connection handler
 │   ├── PostgresConnector.java   # PostgreSQL connection handler
-│   └── MongoConnector.java      # MongoDB connection handler
+│   ├── MongoConnector.java      # MongoDB connection handler
+│   └── Neo4jConnector.java      # Neo4j connection handler
 ├── exceptions/
 │   ├── MySqlException.java       # MySQL exceptions
 │   ├── PostgresException.java   # PostgreSQL exceptions
 │   ├── PropertyException.java   # Property loading exceptions
 │   └── MongoException.java      # MongoDB exceptions
+├── model/
+│   ├── Movie.java               # Movie data model
+│   └── Person.java              # Person data model
+├── service/
+│   ├── Neo4jDatabaseInitializer.java # Neo4j database initialization
+│   └── Neo4jMovieService.java   # Neo4j movie CRUD service
 └── util/
     └── Constants.java            # Application constants
 
@@ -148,6 +195,8 @@ src/test/java/org/daodao/jdbc/
 │   ├── MongoConnectorMockitoTest.java  # Unit tests with Mockito
 │   ├── MongoSimpleTest.java          # Basic infrastructure test
 │   └── TestSuite.java               # Test suite orchestrator
+├── neo4j/
+│   └── Neo4jCRUDTest.java            # Neo4j CRUD operations testing
 └── postgres/
     ├── PostgresBasicCRUDTest.java    # Basic CRUD operations
     ├── PostgresIndexingTest.java     # Index creation and management
@@ -161,12 +210,45 @@ src/test/java/org/daodao/jdbc/
 ## Requirements
 - Java 21
 - MongoDB running on localhost:27017 (for integration tests)
+- Neo4j running on localhost:7687 (for integration tests)
 - Maven for dependency management
 
 ## Running the Application
+
+### Option 1: Using Maven
 ```bash
 mvn compile exec:java -Dexec.mainClass="org.daodao.jdbc.JdbcClientMain"
+mvn compile exec:java -Dexec.mainClass="org.daodao.jdbc.Neo4jMainApplication"
 ```
+
+### Option 2: Using Batch Script
+For Windows users, a convenient batch script is provided:
+
+1. **Neo4j Application Script** (`run_neo4j_test.bat`):
+   ```batch
+   @echo off
+   cd /d "c:/Users/delon/IdeaProjects/JDBC_Client"
+   java -cp "target/classes;target/test-classes;%USERPROFILE%\.m2
+epository\org
+eo4j\driver
+eo4j-java-driver\4.4.3
+eo4j-java-driver-4.4.3.jar;%USERPROFILE%\.m2
+epository\org\slf4j\slf4j-api\1.7.32\slf4j-api-1.7.32.jar;%USERPROFILE%\.m2
+epository\ch\qos\logback\logback-classic\1.2.6\logback-classic-1.2.6.jar;%USERPROFILE%\.m2
+epository\ch\qos\logback\logback-core\1.2.6\logback-core-1.2.6.jar" org.daodao.jdbc.Neo4jMainApplication
+   pause
+   ```
+
+2. **Usage**:
+   - Simply double-click `run_neo4j_test.bat` to run the Neo4j application
+   - The script automatically compiles and executes the Neo4jMainApplication
+   - Required JAR dependencies are included in the classpath
+   - The console window remains open after execution (useful for viewing output)
+
+3. **Prerequisites for the Script**:
+   - Ensure the project is compiled first: `mvn compile`
+   - Neo4j server must be running on localhost:7687
+   - Maven dependencies should be downloaded: `mvn dependency:resolve`
 
 ## Running Tests
 ```bash
@@ -181,6 +263,9 @@ mvn test -Dtest=MongoBasicCRUDTest
 
 # Run only PostgreSQL tests (requires PostgreSQL connection)
 mvn test -Dtest=PostgresBasicCRUDTest
+
+# Run only Neo4j tests (requires Neo4j running)
+mvn test -Dtest=Neo4jCRUDTest
 
 # Run only Mockito tests (unit tests, no database required)
 mvn test -Dtest=MySqlConnectorMockitoTest
@@ -330,3 +415,64 @@ The project includes comprehensive PostgreSQL tests covering:
 - **Coverage**: All major PostgreSQL features tested
 - **Compatibility**: Tests handle connection failures gracefully
 - **Data Management**: Tests include proper cleanup to avoid data accumulation
+
+## Neo4j Test Coverage
+The project includes comprehensive Neo4j tests covering:
+
+### Basic CRUD Operations
+- Movie and Person node creation
+- Relationship creation (ACTED_IN, DIRECTED)
+- Node and relationship queries
+- Data updates and deletions
+- Complex graph traversals
+
+### Database Features
+- Constraints for unique properties
+- Indexes on multiple properties
+- Graph database initialization
+- Schema creation and management
+- Cypher query execution
+
+### Testing Strategy
+- **Integration Tests**: Require Neo4j instance, test real database operations
+- **Unit Tests**: Focused on testing service layer functionality
+- **Data Initialization**: Automatic database setup with sample data
+
+### Test Categories
+1. **Neo4jCRUDTest**: Core Neo4j functionality and CRUD operations
+
+### Neo4j Features Tested
+- **Node Operations**: Create, read, update, delete nodes with properties
+- **Relationship Operations**: Create and query relationships between nodes
+- **Indexing**: Property indexes for performance optimization
+- **Constraints**: Unique constraints for data integrity
+- **Cypher Queries**: Complex queries with filtering and aggregation
+- **Graph Traversals**: Navigation through relationships
+- **Data Modeling**: Movie database with actors and directors
+
+### Sample Data
+The Neo4j tests include comprehensive sample data:
+- **Movies**: 5 sample movies with various genres and years
+- **Actors**: Multiple actors with birth years and nationalities
+- **Directors**: Directors with their respective filmographies
+- **Relationships**: ACTED_IN and DIRECTED relationships connecting the data
+
+### Test Results
+- **Neo4j Tests**: 10+ tests covering all CRUD operations
+- **Pass Rate**: 100% for successful Neo4j connections
+- **Graceful Handling**: Tests handle connection failures appropriately
+- **Cleanup**: Proper teardown to avoid test data accumulation
+
+### Running Neo4j Application
+```bash
+# Run the Neo4j main application
+mvn compile exec:java -Dexec.mainClass="org.daodao.jdbc.Neo4jMainApplication"
+
+# Run Neo4j tests only
+mvn test -Dtest=Neo4jCRUDTest
+```
+
+### Neo4j Connection Prerequisites
+- Neo4j server running on localhost:7687
+- Username: neo4j, Password: configured in application.properties
+- Database: neo4j (default database)
