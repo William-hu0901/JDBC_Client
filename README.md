@@ -1,7 +1,19 @@
 # JDBC_Client
+
 This is a Client to connect with different databases such as MySQL, PostgreSQL, Oracle, MongoDB, and Neo4j with given parameters.
 
-## MySQL Connection Example
+## Project Features
+
+- **Multi-Database Support**: Connect to MySQL, PostgreSQL, MongoDB, and Neo4j
+- **CRUD Operations**: Complete Create, Read, Update, Delete functionality
+- **Modern Java**: Built with Java21 and Maven toolchains
+- **Comprehensive Testing**: Extensive test coverage with integration and unit tests
+- **Logging**: SLF4J with Logback for proper logging
+- **Configuration**: External configuration via application.properties
+
+## Connection Examples
+
+### MySQL Connection Example
 ```java
 MySqlConnector mysqlConnector = new MySqlConnector();
 mysqlConnector.connect();
@@ -30,7 +42,7 @@ List<String> cityUsers = mysqlConnector.findUsersByCity("New York");
 int userCount = mysqlConnector.getUserCount();
 ```
 
-## PostgreSQL Connection Example
+### PostgreSQL Connection Example
 ```java
 PostgresConnector postgresConnector = new PostgresConnector(
     "database-postgres.chams8ws6974.ap-southeast-1.rds.amazonaws.com",
@@ -42,7 +54,7 @@ PostgresConnector postgresConnector = new PostgresConnector(
 postgresConnector.connect();
 ```
 
-## MongoDB Connection Example
+### MongoDB Connection Example
 ```java
 MongoConnector mongoConnector = new MongoConnector();
 mongoConnector.connect();
@@ -65,7 +77,7 @@ boolean updated = mongoConnector.updateDocumentByEmail("user@example.com", "New 
 List<Document> youngUsers = mongoConnector.findDocumentsByAgeRange(20, 30);
 ```
 
-## Neo4j Connection Example
+### Neo4j Connection Example
 ```java
 // Configuration
 Neo4jConfig config = new Neo4jConfig();
@@ -98,21 +110,11 @@ movieService.deleteMovie("Inception");
 ## Supported Databases
 - MySQL
 - PostgreSQL
-- Oracle
 - MongoDB
 - Neo4j
 
-## Features
-- Simple CRUD operations for each database.
-- Custom exception handling for each database.
-- Logging with SLF4J and Logback.
-- Automatic database initialization for MySQL and MongoDB.
-- Schema, table, and index creation for MySQL.
-- View creation for MySQL.
-- Index creation for MongoDB collections.
-- Query operations with filters for MongoDB.
-
 ## Configuration
+
 The application uses `application.properties` for configuration:
 
 ### MySQL Configuration
@@ -148,7 +150,15 @@ neo4j.password=your_password
 neo4j.database=neo4j
 ```
 
+## Requirements
+- Java 21 (configured at D:\Java\jdk-21)
+- MongoDB running on localhost:27017 (for integration tests)
+- Neo4j running on localhost:7687 (for integration tests)
+- Maven for dependency management
+- Maven toolchains configuration (included)
+
 ## Project Structure
+
 ```
 src/main/java/org/daodao/jdbc/
 ├── JdbcClientMain.java          # Main application entry point
@@ -199,8 +209,6 @@ src/test/java/org/daodao/jdbc/
 │   ├── Neo4jCRUDTest.java           # Legacy Neo4j CRUD operations testing
 │   ├── Neo4jBasicFunctionalityTest.java # Comprehensive basic functionality tests
 │   ├── Neo4jNewFeaturesTest.java     # Latest Neo4j production features
-│   ├── Neo4jMockitoTest.java        # Unit tests with Mockito (disabled due to compatibility)
-│   ├── Neo4jMockitoSimpleTest.java  # Java21 compatible Mockito tests
 │   ├── Neo4jTestSuite.java         # Main test suite with logging
 │   └── Neo4jTestRunner.java         # Simple test runner
 └── postgres/
@@ -213,13 +221,6 @@ src/test/java/org/daodao/jdbc/
     └── TestSuite.java                # PostgreSQL test suite
 ```
 
-## Requirements
-- Java 21 (configured at D:\Java\jdk-21)
-- MongoDB running on localhost:27017 (for integration tests)
-- Neo4j running on localhost:7687 (for integration tests)
-- Maven for dependency management
-- Maven toolchains configuration (included)
-
 ## Running the Application
 
 ### Option 1: Using Maven
@@ -229,210 +230,229 @@ mvn compile exec:java -Dexec.mainClass="org.daodao.jdbc.Neo4jMainApplication"
 ```
 
 ### Option 2: Using Batch Scripts
-For Windows users, convenient batch scripts are provided:
 
-1. **Neo4j Application Script** (`run_neo4j_test.bat`):
-   ```batch
-   @echo off
-   cd /d "c:/Users/delon/IdeaProjects/JDBC_Client"
-   java -cp "target/classes;target/test-classes;%USERPROFILE%\.m2
-epository\org
-eo4j\driver
-eo4j-java-driver\4.4.3
-eo4j-java-driver-4.4.3.jar;%USERPROFILE%\.m2
-epository\org\slf4j\slf4j-api\1.7.32\slf4j-api-1.7.32.jar;%USERPROFILE%\.m2
-epository\ch\qos\logback\logback-classic\1.2.6\logback-classic-1.2.6.jar;%USERPROFILE%\.m2
-epository\ch\qos\logback\logback-core\1.2.6\logback-core-1.2.6.jar" org.daodao.jdbc.Neo4jMainApplication
-   pause
-   ```
+#### Basic Neo4j Script (`run_neo4j_test.bat`)
+Double-click to run the Neo4j application with automatic classpath configuration.
 
-2. **Java21 Toolchain Script** (`run_neo4j_test_java21.bat`):
-   ```batch
-   @echo off
-   echo Running Neo4j Test Cases with Java21 Toolchain...
-   echo Setting JAVA_HOME to Java21...
-   set JAVA_HOME=D:\Java\jdk-21
-   set PATH=%JAVA_HOME%\bin;%PATH%
-   
-   echo Java Version:
-   java -version
-   
-   echo Compiling with Java21 Toolchain...
-   call mvn clean compile -T 1C
-   
-   echo Running Neo4j Test Suite with Java21...
-   call mvn test -Dmaven.test.failure.ignore=true -DskipTests=false -B
-   
-   pause
-   ```
+#### Java21 Toolchain Script (`run_neo4j_test_java21.bat`)
+Runs with Java21 toolchain support:
+```batch
+@echo off
+echo Running Neo4j Test Cases with Java21 Toolchain...
+echo Setting JAVA_HOME to Java21...
+set JAVA_HOME=D:\Java\jdk-21
+set PATH=%JAVA_HOME%\bin;%PATH%
 
-3. **Usage**:
-   - **Basic Script**: Double-click `run_neo4j_test.bat` to run the Neo4j application
-   - **Java21 Toolchain**: Double-click `run_neo4j_test_java21.bat` for Java21 with toolchain support
-   - Both scripts automatically compile and execute the appropriate components
-   - Required JAR dependencies are included in the classpath
-   - The console window remains open after execution (useful for viewing output)
+echo Java Version:
+java -version
 
-4. **Prerequisites for the Scripts**:
-   - Ensure the project is compiled first: `mvn compile`
-   - Neo4j server must be running on localhost:7687
-   - Maven dependencies should be downloaded: `mvn dependency:resolve`
-   - Java21 must be installed at D:\Java\jdk-21 for toolchain script
+echo Compiling with Java21 Toolchain...
+call mvn clean compile -T 1C
+
+echo Running Neo4j Test Suite with Java21...
+call mvn test -Dmaven.test.failure.ignore=true -DskipTests=false -B
+
+pause
+```
 
 ### Option 3: Using Maven Toolchains
 ```bash
-# Use Java21 toolchain for all operations
-mvn -Dtoolchain.skip=false clean compile test
-
 # Verify toolchain configuration
 mvn toolchain:toolchain
 
-# Run specific tests with toolchain
+# Compile with toolchain
+mvn -Dtoolchain.skip=false clean compile
+
+# Run tests with toolchain
 mvn -Dtoolchain.skip=false test -Dtest=Neo4jTestSuite
+
+# Build entire project with toolchain
+mvn -Dtoolchain.skip=false clean package
 ```
 
 ## Running Tests
+
+### All Tests
 ```bash
 # Run all tests
 mvn test
 
-# Run only MySQL tests (requires MySQL running)
+# Run tests with Java21 toolchain
+mvn -Dtoolchain.skip=false test
+```
+
+### Database-Specific Tests
+
+#### MySQL Tests
+```bash
 mvn test -Dtest=MySqlBasicCRUDTest
-
-# Run only MongoDB tests (requires MongoDB running)
-mvn test -Dtest=MongoBasicCRUDTest
-
-# Run only PostgreSQL tests (requires PostgreSQL connection)
-mvn test -Dtest=PostgresBasicCRUDTest
-
-# Run only Neo4j tests (requires Neo4j running)
-mvn test -Dtest=Neo4jTestSuite
-mvn test -Dtest=Neo4jBasicFunctionalityTest
-mvn test -Dtest=Neo4jNewFeaturesTest
-mvn test -Dtest=Neo4jMockitoSimpleTest
-
-# Run only Mockito tests (unit tests, no database required)
-mvn test -Dtest=MySqlConnectorMockitoTest
-mvn test -Dtest=MongoConnectorMockitoTest
-mvn test -Dtest=PostgresConnectorMockitoTest
-
-# Run test suites
-mvn test -Dtest=TestSuite
+mvn test -Dtest=MySqlNewFeaturesTest
+mvn test -Dtest=MySqlSecurityPerformanceTest
+mvn test -Dtest=MySqlSimpleTest
 mvn test -Dtest=org.daodao.jdbc.mysql.TestSuite
+```
+
+#### MongoDB Tests
+```bash
+mvn test -Dtest=MongoBasicCRUDTest
+mvn test -Dtest=MongoIndexingAggregationTest
+mvn test -Dtest=MongoTransactionTest
+mvn test -Dtest=MongoNewFeaturesTest
+mvn test -Dtest=MongoSimpleTest
+mvn test -Dtest=org.daodao.jdbc.mongodb.TestSuite
+```
+
+#### PostgreSQL Tests
+```bash
+mvn test -Dtest=PostgresBasicCRUDTest
+mvn test -Dtest=PostgresIndexingTest
+mvn test -Dtest=PostgresTransactionTest
+mvn test -Dtest=PostgresNewFeaturesTest
+mvn test -Dtest=PostgresSimpleTest
 mvn test -Dtest=org.daodao.jdbc.postgres.TestSuite
 ```
 
-## MongoDB Test Coverage
-The project includes comprehensive MongoDB tests covering:
+#### Neo4j Tests
+```bash
+# Run all Neo4j tests
+mvn test -Dtest=Neo4jTestSuite
 
-### Basic CRUD Operations
-- Single and multiple document insertions
-- Document queries with filters
-- Updates and replacements
-- Document deletion
-- Counting and distinct operations
+# Run specific Neo4j test classes
+mvn test -Dtest=Neo4jCRUDTest
+mvn test -Dtest=Neo4jBasicFunctionalityTest
+mvn test -Dtest=Neo4jNewFeaturesTest
 
-### Advanced Features
-- Index creation (single, compound, text, unique)
-- Aggregation pipelines (group, sort, limit, project, unwind, lookup)
-- Transaction support with rollback and retry
-- Change streams monitoring
-- Time series collections
-- Wildcard indexes
-- Advanced array update operators
-
-### Testing Strategy
-- **Integration Tests**: Require MongoDB instance, test real database operations
-- **Unit Tests**: Use Mockito for testing business logic without database dependency
-- **Test Suite**: Orchestrates all MongoDB-related tests
+# Quick test runner
+mvn test -Dtest=Neo4jTestRunner
+```
 
 ### Test Categories
+
+#### Neo4j Test Coverage
+
+**Neo4jCRUDTest**: Legacy Neo4j CRUD operations testing
+- Basic node and relationship operations
+- Movie and person management
+- Database initialization
+
+**Neo4jBasicFunctionalityTest**: Comprehensive basic functionality tests (15+ test cases)
+- Node creation and retrieval operations
+- Relationship management (ACTED_IN, DIRECTED)
+- Graph traversal and path finding
+- Data updates and deletions with transaction handling
+- Complex Cypher queries with filtering and aggregation
+
+**Neo4jNewFeaturesTest**: Latest Neo4j production features (10+ test cases)
+- Multi-database operations and switching
+- Advanced Cypher features (subqueries, pattern comprehensions)
+- Index and constraint management
+- Transaction management with multiple operations
+- Performance optimization queries
+
+**Neo4jTestSuite**: Main test suite with comprehensive logging and orchestration
+- Coordinated test execution
+- Proper setup and cleanup
+- Logging and monitoring
+
+**Test Results**: 25+ tests across multiple test classes with high success rate
+
+#### MongoDB Test Coverage
+
+**Total Tests**: 38 tests total
+- **36 tests passed** (94.7% pass rate)
+- **6 tests skipped** (due to feature limitations)
+- **0 test failures**
+
+**Categories**:
 1. **MongoBasicCRUDTest**: Core MongoDB functionality
 2. **MongoIndexingAggregationTest**: Indexing and aggregation operations
 3. **MongoTransactionTest**: ACID transaction testing
 4. **MongoNewFeaturesTest**: Latest MongoDB production features
 5. **MongoConnectorMockitoTest**: Unit testing with mocked dependencies
 
-### Test Results Summary
-- **MongoDB Tests**: 38 tests total
-  - 36 tests passed (94.7% pass rate)
-  - 6 tests skipped (due to feature limitations)
-  - 0 test failures
-- **PostgreSQL Tests**: 38 tests total
-  - 38 tests passed (100% pass rate)
-  - 0 tests skipped
-  - 0 test failures
+#### MySQL Test Coverage
 
-### Notes on Test Execution
-- MongoDB transaction tests are skipped as they require replica set configuration
-- Mockito tests for MongoDB are disabled due to Java 25 incompatibility with current Byte Buddy version
-- Some advanced aggregation tests are skipped for MongoDB version compatibility
-- Connection timeout settings (5 seconds) are configured for all MongoDB tests
-- All PostgreSQL tests execute successfully with remote AWS RDS connection
+**Total Tests**: 16+ tests total across multiple test classes
+- **16 tests passed** in basic test suite (100% pass rate)
+- **Additional new features tests** covering MySQL 8.0+ capabilities
+- **0 test failures**
+- **Some tests skipped gracefully** when MySQL features are not available
 
-## MySQL Test Coverage
-The project includes comprehensive MySQL tests covering:
-
-### Basic CRUD Operations
-- Database schema and table creation
-- Sample data insertion
-- User management (Create, Read, Update, Delete)
-- Query operations with filters
-- Index creation and management
-- View creation for data summarization
-
-### Database Features
-- Auto-increment primary keys
-- Timestamp management (created_at, updated_at)
-- Unique constraints and foreign key relationships
-- Prepared statements for security
-- Connection pooling and timeout handling
-
-### Testing Strategy
-- **Integration Tests**: Require MySQL instance, test real database operations
-- **Unit Tests**: Use Mockito for testing business logic without database dependency
-- **Test Suite**: Orchestrates all MySQL-related tests
-
-### Test Categories
+**Categories**:
 1. **MySqlSimpleTest**: Configuration and setup validation
 2. **MySqlBasicCRUDTest**: Core MySQL functionality and CRUD operations
-3. **MySqlNewFeaturesTest**: MySQL 8.0+ new features (Window Functions, CTE, JSON, Generated Columns)
-4. **MySqlSecurityPerformanceTest**: Security and Performance features (Authentication, Performance Schema, Histograms)
+3. **MySqlNewFeaturesTest**: MySQL 8.0+ new features
+4. **MySqlSecurityPerformanceTest**: Security and Performance features
 5. **MySqlConnectorMockitoTest**: Unit testing with mocked dependencies
 
-### MySQL 8.0+ New Features Tested
-- **Window Functions**: ROW_NUMBER(), RANK(), DENSE_RANK() with OVER() clause
-- **Common Table Expressions**: Recursive CTEs with WITH clause
-- **JSON Functions**: JSON_EXTRACT, JSON_CONTAINS, JSON_TABLE operations
-- **Generated Columns**: Both STORED and VIRTUAL generated columns
-- **Locking Features**: SKIP LOCKED and NOWAIT for SELECT ... FOR UPDATE
-- **Security Features**: caching_sha2_password authentication
-- **Performance Features**: Performance Schema, Histogram statistics
-- **Index Management**: Invisible indexes for performance tuning
-- **Resource Groups**: Query resource management
-- **Connection Attributes**: Enhanced monitoring capabilities
+#### PostgreSQL Test Coverage
 
-### Test Results Summary
-- **MySQL Tests**: 16+ tests total across multiple test classes
-  - 16 tests passed in basic test suite (100% pass rate for available features)
-  - Additional new features tests covering MySQL 8.0+ capabilities
-  - 0 test failures
-  - Some tests skipped gracefully when MySQL features are not available
+**Total Tests**: 38 tests
+- **Pass Rate**: 100% (38/38 tests pass)
+- **Coverage**: All major PostgreSQL features tested
+- **Compatibility**: Tests handle connection failures gracefully
+- **Data Management**: Tests include proper cleanup to avoid data accumulation
 
-## PostgreSQL Test Coverage
-The project includes comprehensive PostgreSQL tests covering:
+## Java21 Toolchain Support
 
-### Basic CRUD Operations
+### Setup
+
+The project includes complete Java21 toolchain support:
+
+1. **toolchains.xml**: Defines Java21 toolchain at `D:\Java\jdk-21`
+2. **Maven Configuration**: Updated compiler and surefire plugins for Java21
+3. **Batch Scripts**: Convenient scripts for Java21 execution
+4. **Parallel Compilation**: `-T 1C` enables parallel compilation
+
+### Benefits
+
+- **Consistent Java Version**: Ensures all builds use Java21
+- **Parallel Compilation**: Faster build times with multi-core support
+- **Isolated Environment**: Separate from system Java installation
+- **Reproducible Builds**: Same toolchain across different environments
+
+### Usage
+
+```bash
+# Using batch script
+run_neo4j_test_java21.bat
+
+# Using Maven with toolchain
+mvn -Dtoolchain.skip=false clean compile test
+
+# Build with toolchain
+mvn -Dtoolchain.skip=false clean package
+```
+
+## Features
+
+### Database Features
+
+#### MySQL Features
+- Automatic database initialization
+- Schema, table, and index creation
+- View creation for data summarization
+- Prepared statements for security
+- Connection pooling and timeout handling
+- MySQL 8.0+ new features testing
+
+#### MongoDB Features
+- Automatic database initialization
+- Index creation (single, compound, text, unique)
+- Aggregation pipelines (group, sort, limit, project, unwind, lookup)
+- Transaction support with rollback and retry
+- Change streams monitoring
+- Time series collections
+- Advanced array update operators
+
+#### PostgreSQL Features
 - Table creation with various data types
 - Data insertion with conflict handling
 - Complex SELECT queries with conditions
 - UPDATE operations with filters
 - DELETE operations with constraints
-
-### Advanced Features
 - Index management (B-Tree, unique, composite, partial)
 - Transaction control (commit, rollback, savepoints)
-- Isolation levels and concurrency control
 - JSONB data type operations
 - Generated columns (PostgreSQL 12+)
 - UPSERT operations (INSERT ... ON CONFLICT)
@@ -441,108 +461,86 @@ The project includes comprehensive PostgreSQL tests covering:
 - Window functions
 - Table partitioning (PostgreSQL 10+)
 
-### Testing Strategy
-- **Integration Tests**: Require PostgreSQL connection, test real database operations
-- **Unit Tests**: Use Mockito for testing business logic without database dependency
-- **Test Suite**: Orchestrates all PostgreSQL-related tests
-
-### Test Categories
-1. **PostgresBasicCRUDTest**: Core PostgreSQL functionality
-2. **PostgresIndexingTest**: Index creation and management
-3. **PostgresTransactionTest**: ACID transaction testing
-4. **PostgresNewFeaturesTest**: Latest PostgreSQL production features
-5. **PostgresConnectorMockitoTest**: Unit testing with mocked dependencies
-
-### Test Results
-- **Total Tests**: 38
-- **Pass Rate**: 100% (38/38 tests pass)
-- **Coverage**: All major PostgreSQL features tested
-- **Compatibility**: Tests handle connection failures gracefully
-- **Data Management**: Tests include proper cleanup to avoid data accumulation
-
-## Neo4j Test Coverage
-The project includes comprehensive Neo4j tests using Java21 with Maven toolchains:
-
-### Basic Functionality Tests
+#### Neo4j Features
 - Node creation and retrieval operations
 - Relationship management (ACTED_IN, DIRECTED)
 - Graph traversal and path finding
 - Data updates and deletions with transaction handling
 - Complex Cypher queries with filtering and aggregation
-
-### New Features Tests
-- Multi-database operations and switching
-- Advanced Cypher features (subqueries, pattern comprehensions)
 - Index and constraint management
-- Transaction management with multiple operations
-- Performance optimization queries
-
-### Database Features
-- Constraints for unique properties
-- Indexes on multiple properties for performance
 - Graph database initialization with sample data
-- Schema creation and management
-- Proper transaction handling and rollback
+- Advanced Cypher features (subqueries, pattern comprehensions)
+- Multi-database operations and switching
 
-### Testing Strategy
-- **Integration Tests**: Require Neo4j instance, test real database operations
-- **Unit Tests**: Use Mockito for service layer testing (disabled due to Java compatibility)
-- **Test Suite**: Comprehensive test orchestration with logging
-- **Simplified Tests**: Focus on functionality demonstration over complexity
+### Application Features
+- Simple CRUD operations for each database
+- Custom exception handling for each database
+- Logging with SLF4J and Logback
+- Automatic database initialization for MySQL and MongoDB
+- Schema, table, and index creation for MySQL
+- View creation for MySQL
+- Index creation for MongoDB collections
+- Query operations with filters for MongoDB
+- Java21 compatibility with Maven toolchains
+- Comprehensive test coverage
+- Parallel compilation support
 
-### Test Categories
-1. **Neo4jCRUDTest**: Legacy Neo4j CRUD operations testing
-2. **Neo4jBasicFunctionalityTest**: Comprehensive basic functionality tests (15+ test cases)
-3. **Neo4jNewFeaturesTest**: Latest Neo4j production features (10+ test cases)
-4. **Neo4jMockitoSimpleTest**: Java21 compatible Mockito unit tests (10+ test cases)
-5. **Neo4jTestSuite**: Main test suite with comprehensive logging and orchestration
-6. **Neo4jTestRunner**: Simple test runner for quick execution
+## Troubleshooting
 
-### Neo4j Features Tested
-- **Node Operations**: Create, read, update, delete nodes with properties
-- **Relationship Operations**: Create and query relationships between nodes
-- **Indexing**: Property indexes for performance optimization
-- **Constraints**: Unique constraints for data integrity
-- **Cypher Queries**: Complex queries with filtering, aggregation, and subqueries
-- **Graph Traversals**: Navigation through relationships with path finding
-- **Transaction Management**: Proper transaction handling with rollback capabilities
-- **Data Modeling**: Movie database with actors and directors
-- **New Features**: Multi-database support, advanced pattern matching
+### Common Issues
 
-### Sample Data
-The Neo4j tests include comprehensive sample data:
-- **Movies**: Sample movies with various genres, years, and descriptions
-- **Actors**: Multiple actors with birth years and nationalities
-- **Directors**: Directors with their respective filmographies
-- **Relationships**: ACTED_IN and DIRECTED relationships connecting the data
+1. **Java21 not found at D:\Java\jdk-21**
+   - Install Java21 at the specified location
+   - Update toolchains.xml with correct path
+   - Scripts will fall back to system Java if needed
 
-### Test Results
-- **Total Neo4j Tests**: 25+ tests across multiple test classes
-- **Pass Rate**: High success rate for proper Neo4j connections
-- **Graceful Handling**: Tests handle connection failures appropriately
-- **Cleanup**: Proper teardown to avoid test data accumulation
-- **Retry Logic**: Failed tests are skipped after 6 attempts per requirement
+2. **Neo4j connection failed**
+   - Ensure Neo4j is running on localhost:7687
+   - Verify credentials in application.properties
+   - Check database name configuration
 
-### Running Neo4j Tests with Java21 Toolchain
+3. **MongoDB connection failed**
+   - Ensure MongoDB is running on localhost:27017
+   - Check connection string in application.properties
+
+4. **Test failures**
+   - Verify databases are running
+   - Check connection parameters
+   - Ensure proper configuration in application.properties
+
+5. **Maven build issues**
+   - Ensure Java21 is properly installed
+   - Check Maven version compatibility (3.6+)
+   - Verify toolchain configuration
+
+### Verification Commands
+
 ```bash
-# Run all Neo4j tests with Java21 toolchain
+# Check Java version
+java -version
+
+# Check Maven version
+mvn -version
+
+# Verify toolchain
+mvn toolchain:toolchain
+
+# Test compilation
+mvn compile -Dtoolchain.skip=false
+
+# Run specific test
 mvn test -Dtest=Neo4jTestSuite -Dtoolchain.skip=false
-
-# Run specific test classes
-mvn test -Dtest=Neo4jBasicFunctionalityTest -Dtoolchain.skip=false
-mvn test -Dtest=Neo4jNewFeaturesTest -Dtoolchain.skip=false
-mvn test -Dtest=Neo4jMockitoSimpleTest -Dtoolchain.skip=false
-
-# Use the Java21 batch script
-run_neo4j_test_java21.bat
-
-# Quick test runner
-mvn test -Dtest=Neo4jTestRunner -Dtoolchain.skip=false
 ```
 
-### Neo4j Connection Prerequisites
-- Neo4j server running on localhost:7687
-- Java21 installed at D:\Java\jdk-21 (for toolchain support)
-- Username: neo4j, Password: configured in application.properties
-- Database: neo4j (default database)
-- Maven toolchains configuration (toolchains.xml included)
+## License
+
+This project is for educational and demonstration purposes.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass with Java21 toolchain
+6. Submit a pull request

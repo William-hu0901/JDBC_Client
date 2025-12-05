@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.daodao.jdbc.connectors.PostgresConnector;
@@ -32,42 +33,53 @@ public class PostgresBasicCRUDTest {
                 config.getPostgresPassword()
             );
             connector.connect();
+            
+            // Clean up any existing test table before tests
+            try {
+                connector.update("DROP TABLE IF EXISTS test_users CASCADE");
+            } catch (SQLException e) {
+                log.debug("Table test_users does not exist or cannot be dropped: {}", e.getMessage());
+            }
+            
             log.info("PostgreSQL connection established for CRUD tests");
         } catch (Exception e) {
             log.warn("Failed to connect to PostgreSQL for CRUD tests: {}", e.getMessage());
             connector = null;
+            // Skip tests if PostgreSQL is not available
+            assumeTrue(false, "PostgreSQL not available: " + e.getMessage());
         }
     }
     
     @AfterEach
     void tearDown() {
+        // Clean up test data
         if (connector != null) {
-            connector.disconnect();
+            try {
+                connector.update("DROP TABLE IF EXISTS test_users CASCADE");
+            } catch (SQLException e) {
+                log.debug("Failed to clean up test table: {}", e.getMessage());
+            } finally {
+                connector.disconnect();
+            }
         }
     }
     
     @Test
     @DisplayName("Test PostgreSQL Connection")
+    // Test case for verifying PostgreSQL database connection establishment
     void testConnection() {
-        if (connector == null) {
-            log.warn("Skipping connection test - no database connection available");
-            return;
-        }
         assertNotNull(connector, "Connector should not be null");
+        assertTrue(connector != null, "PostgreSQL connection should be established");
         log.info("Connection test passed");
     }
     
     @Test
     @DisplayName("Test CREATE Table Operation")
+    // Test case for verifying PostgreSQL table creation functionality
     void testCreateTable() {
-        if (connector == null) {
-            log.warn("Skipping CREATE test - no database connection available");
-            return;
-        }
-        
         try {
             String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS test_users (
+                CREATE TABLE test_users (
                     id SERIAL PRIMARY KEY,
                     name VARCHAR(100) NOT NULL,
                     email VARCHAR(100) UNIQUE NOT NULL,
@@ -75,24 +87,26 @@ public class PostgresBasicCRUDTest {
                 )
                 """;
             connector.create(createTableSQL);
+            
+            // Verify table was created by checking if we can query it
+            boolean tableExists = connector.readBoolean("SELECT COUNT(*) FROM test_users");
+            assertTrue(tableExists, "Should be able to query the created table");
+            
             log.info("CREATE TABLE test passed");
         } catch (SQLException e) {
             log.error("CREATE TABLE test failed: {}", e.getMessage());
-            fail("CREATE TABLE operation should not throw exception");
+            fail("CREATE TABLE operation should not throw exception: " + e.getMessage());
         }
     }
     
     @Test
     @DisplayName("Test INSERT Operation")
+    // Test case for verifying PostgreSQL data insertion functionality
     void testInsertData() {
-        if (connector == null) {
-            log.warn("Skipping INSERT test - no database connection available");
-            return;
-        }
-        
         try {
+            // Create table first
             String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS test_users (
+                CREATE TABLE test_users (
                     id SERIAL PRIMARY KEY,
                     name VARCHAR(100) NOT NULL,
                     email VARCHAR(100) UNIQUE NOT NULL,
@@ -101,30 +115,32 @@ public class PostgresBasicCRUDTest {
                 """;
             connector.create(createTableSQL);
             
+            // Insert test data
             String insertSQL = """
                 INSERT INTO test_users (name, email) 
                 VALUES ('John Doe', 'john.doe@example.com')
-                ON CONFLICT (email) DO NOTHING
                 """;
             connector.update(insertSQL);
+            
+            // Verify data was inserted
+            int count = connector.readSingleValue("SELECT COUNT(*) FROM test_users WHERE email = 'john.doe@example.com'");
+            assertEquals(1, count, "Should find exactly one inserted record");
+            
             log.info("INSERT test passed");
         } catch (SQLException e) {
             log.error("INSERT test failed: {}", e.getMessage());
-            fail("INSERT operation should not throw exception");
+            fail("INSERT operation should not throw exception: " + e.getMessage());
         }
     }
     
     @Test
     @DisplayName("Test SELECT Operation")
+    // Test case for verifying PostgreSQL data retrieval functionality
     void testSelectData() {
-        if (connector == null) {
-            log.warn("Skipping SELECT test - no database connection available");
-            return;
-        }
-        
         try {
+            // Create table first
             String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS test_users (
+                CREATE TABLE test_users (
                     id SERIAL PRIMARY KEY,
                     name VARCHAR(100) NOT NULL,
                     email VARCHAR(100) UNIQUE NOT NULL,
@@ -133,39 +149,31 @@ public class PostgresBasicCRUDTest {
                 """;
             connector.create(createTableSQL);
             
+            // Insert test data
             String insertSQL = """
                 INSERT INTO test_users (name, email) 
                 VALUES ('Jane Smith', 'jane.smith@example.com')
-                ON CONFLICT (email) DO NOTHING
                 """;
             connector.update(insertSQL);
             
-            String selectSQL = "SELECT COUNT(*) as count FROM test_users WHERE email = 'jane.smith@example.com'";
-            ResultSet resultSet = connector.read(selectSQL);
-            
-            assertTrue(resultSet.next(), "ResultSet should have at least one row");
-            int count = resultSet.getInt("count");
-            assertTrue(count >= 0, "Count should be non-negative");
-            
-            resultSet.close();
+            // Query the data
+            int count = connector.readSingleValue("SELECT COUNT(*) FROM test_users WHERE email = 'jane.smith@example.com'");
+            assertEquals(1, count, "Should find exactly one record for Jane Smith");
             log.info("SELECT test passed");
         } catch (SQLException e) {
             log.error("SELECT test failed: {}", e.getMessage());
-            fail("SELECT operation should not throw exception");
+            fail("SELECT operation should not throw exception: " + e.getMessage());
         }
     }
     
     @Test
     @DisplayName("Test UPDATE Operation")
+    // Test case for verifying PostgreSQL data update functionality
     void testUpdateData() {
-        if (connector == null) {
-            log.warn("Skipping UPDATE test - no database connection available");
-            return;
-        }
-        
         try {
+            // Create table first
             String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS test_users (
+                CREATE TABLE test_users (
                     id SERIAL PRIMARY KEY,
                     name VARCHAR(100) NOT NULL,
                     email VARCHAR(100) UNIQUE NOT NULL,
@@ -174,37 +182,42 @@ public class PostgresBasicCRUDTest {
                 """;
             connector.create(createTableSQL);
             
+            // Insert test data
             String insertSQL = """
                 INSERT INTO test_users (name, email) 
                 VALUES ('Test User', 'test.user@example.com')
-                ON CONFLICT (email) DO NOTHING
                 """;
             connector.update(insertSQL);
             
+            // Update the data
             String updateSQL = """
                 UPDATE test_users 
                 SET name = 'Updated User' 
                 WHERE email = 'test.user@example.com'
                 """;
             connector.update(updateSQL);
+            
+            // Verify the update using original read method for string values
+            try (ResultSet resultSet = connector.read("SELECT name FROM test_users WHERE email = 'test.user@example.com'")) {
+                assertTrue(resultSet.next(), "ResultSet should have at least one row");
+                assertEquals("Updated User", resultSet.getString("name"), "Name should be updated");
+            }
+            
             log.info("UPDATE test passed");
         } catch (SQLException e) {
             log.error("UPDATE test failed: {}", e.getMessage());
-            fail("UPDATE operation should not throw exception");
+            fail("UPDATE operation should not throw exception: " + e.getMessage());
         }
     }
     
     @Test
     @DisplayName("Test DELETE Operation")
+    // Test case for verifying PostgreSQL data deletion functionality
     void testDeleteData() {
-        if (connector == null) {
-            log.warn("Skipping DELETE test - no database connection available");
-            return;
-        }
-        
         try {
+            // Create table first
             String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS test_users (
+                CREATE TABLE test_users (
                     id SERIAL PRIMARY KEY,
                     name VARCHAR(100) NOT NULL,
                     email VARCHAR(100) UNIQUE NOT NULL,
@@ -213,22 +226,32 @@ public class PostgresBasicCRUDTest {
                 """;
             connector.create(createTableSQL);
             
+            // Insert test data
             String insertSQL = """
                 INSERT INTO test_users (name, email) 
                 VALUES ('Delete User', 'delete.user@example.com')
-                ON CONFLICT (email) DO NOTHING
                 """;
             connector.update(insertSQL);
             
+            // Verify data exists before deletion
+            int beforeCount = connector.readSingleValue("SELECT COUNT(*) FROM test_users WHERE email = 'delete.user@example.com'");
+            assertEquals(1, beforeCount, "Should find exactly one record before deletion");
+            
+            // Delete the data
             String deleteSQL = """
                 DELETE FROM test_users 
                 WHERE email = 'delete.user@example.com'
                 """;
             connector.delete(deleteSQL);
+            
+            // Verify the deletion
+            int afterCount = connector.readSingleValue("SELECT COUNT(*) FROM test_users WHERE email = 'delete.user@example.com'");
+            assertEquals(0, afterCount, "Should find no records after deletion");
+            
             log.info("DELETE test passed");
         } catch (SQLException e) {
             log.error("DELETE test failed: {}", e.getMessage());
-            fail("DELETE operation should not throw exception");
+            fail("DELETE operation should not throw exception: " + e.getMessage());
         }
     }
 }

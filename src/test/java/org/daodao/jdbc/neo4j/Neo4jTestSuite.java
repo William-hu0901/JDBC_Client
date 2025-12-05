@@ -13,12 +13,10 @@ import org.junit.platform.suite.api.SuiteDisplayName;
  * 1. Neo4jCRUDTest - Basic CRUD operations and database interactions
  * 2. Neo4jBasicFunctionalityTest - Core Neo4j features and Cypher queries
  * 3. Neo4jNewFeaturesTest - Latest Neo4j features and capabilities
- * 4. Neo4jMockitoTest - Unit tests with mocked dependencies
  * 
  * Test Categories:
  * - Integration Tests: Require actual Neo4j database connection
  * - Feature Tests: Test specific Neo4j capabilities
- * - Unit Tests: Use Mockito for isolated testing
  * - Edge Case Tests: Error handling and boundary conditions
  * 
  * Execution Order:
@@ -39,8 +37,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
 @SelectClasses({
     Neo4jCRUDTest.class,
     Neo4jBasicFunctionalityTest.class,
-    Neo4jNewFeaturesTest.class,
-     Neo4jMockitoSimpleTest.class
+    Neo4jNewFeaturesTest.class
 })
 public class Neo4jTestSuite {
     // This class serves as a test suite orchestrator

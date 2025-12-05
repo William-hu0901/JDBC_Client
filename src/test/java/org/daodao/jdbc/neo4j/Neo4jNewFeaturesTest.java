@@ -54,6 +54,7 @@ class Neo4jNewFeaturesTest {
 
     @Test
     @DisplayName("Test Enhanced Constraint Management")
+    // Test case for verifying Neo4j enhanced constraint management features
     void testEnhancedConstraints() {
         // Test node key constraint (Neo4j 4.x+)
         String nodeKeyConstraint = "CREATE CONSTRAINT movie_node_key IF NOT EXISTS FOR (m:Movie) REQUIRE (m.title, m.year) IS NODE KEY";
@@ -82,6 +83,7 @@ class Neo4jNewFeaturesTest {
 
     @Test
     @DisplayName("Test Composite Index Creation")
+    // Test case for verifying Neo4j composite index creation and usage
     void testCompositeIndex() {
         // Test composite index on multiple properties
         String compositeIndex = "CREATE INDEX movie_composite_index IF NOT EXISTS FOR (m:Movie) ON (m.genre, m.year)";
@@ -118,6 +120,7 @@ class Neo4jNewFeaturesTest {
 
     @Test
     @DisplayName("Test Enhanced Full-Text Search")
+    // Test case for verifying Neo4j full-text search capabilities
     void testFullTextSearch() {
         // Create full-text index
         String createFulltextIndex = "CREATE FULLTEXT INDEX movie_fulltext_index IF NOT EXISTS FOR (m:Movie) ON EACH [m.title, m.description]";
@@ -154,6 +157,7 @@ class Neo4jNewFeaturesTest {
 
     @Test
     @DisplayName("Test Subquery with EXISTS Clause")
+    // Test case for verifying Neo4j subquery functionality with EXISTS clause
     void testSubqueryWithExists() {
         // Test subquery with EXISTS
         String query = "MATCH (movie:Movie) " +
@@ -183,6 +187,7 @@ class Neo4jNewFeaturesTest {
 
     @Test
     @DisplayName("Test Pattern Comprehension")
+    // Test case for verifying Neo4j pattern comprehension feature
     void testPatternComprehension() {
         // Test pattern comprehension
         String query = "MATCH (p:Person {name: 'Keanu Reeves'}) " +
@@ -206,6 +211,7 @@ class Neo4jNewFeaturesTest {
 
     @Test
     @DisplayName("Test Reduce Function")
+    // Test case for verifying Neo4j REDUCE function for data aggregation
     void testReduceFunction() {
         // Test REDUCE function for aggregation
         String query = "MATCH (p:Person) " +
@@ -230,6 +236,7 @@ class Neo4jNewFeaturesTest {
 
     @Test
     @DisplayName("Test Date and Time Functions")
+    // Test case for verifying Neo4j date and time functions
     void testDateTimeFunctions() {
         // Test date/time functions
         String query = "RETURN datetime().year as currentYear, " +
@@ -259,6 +266,7 @@ class Neo4jNewFeaturesTest {
 
     @Test
     @DisplayName("Test Transaction Management")
+    // Test case for verifying Neo4j transaction management capabilities
     void testTransactionManagement() {
         // Test transaction with multiple operations
         try (var session = connector.getSession()) {
@@ -296,6 +304,7 @@ class Neo4jNewFeaturesTest {
 
     @Test
     @DisplayName("Test SHOW Commands for Metadata")
+    // Test case for verifying Neo4j SHOW commands for metadata retrieval
     void testShowCommands() {
         // Test SHOW commands for metadata
         try {
@@ -316,6 +325,7 @@ class Neo4jNewFeaturesTest {
 
     @Test
     @DisplayName("Test Query Plan Analysis")
+    // Test case for verifying Neo4j query plan analysis with EXPLAIN and PROFILE
     void testQueryPlanAnalysis() {
         // Test EXPLAIN and PROFILE commands
         try {
@@ -338,6 +348,7 @@ class Neo4jNewFeaturesTest {
 
     @Test
     @DisplayName("Test CALL Procedures")
+    // Test case for verifying Neo4j CALL procedures functionality
     void testCallProcedures() {
         // Test built-in procedures
         try {

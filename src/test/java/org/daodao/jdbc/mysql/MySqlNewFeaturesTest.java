@@ -195,6 +195,7 @@ class MySqlNewFeaturesTest {
     }
     
     @Test
+    // Test case for verifying MySQL window functions (ROW_NUMBER, RANK, DENSE_RANK)
     void testWindowFunctions() throws SQLException {
         try {
             Statement stmt = directConnection.createStatement();
@@ -243,6 +244,7 @@ class MySqlNewFeaturesTest {
     }
     
     @Test
+    // Test case for verifying MySQL Common Table Expressions (CTE) with WITH clause
     void testCommonTableExpressions() throws SQLException {
         try {
             Statement stmt = directConnection.createStatement();
@@ -278,6 +280,7 @@ class MySqlNewFeaturesTest {
     }
     
     @Test
+    // Test case for verifying MySQL JSON functions and operators
     void testJsonFunctions() throws SQLException {
         try {
             Statement stmt = directConnection.createStatement();
@@ -309,6 +312,7 @@ class MySqlNewFeaturesTest {
     }
     
     @Test
+    // Test case for verifying MySQL generated columns functionality
     void testGeneratedColumns() throws SQLException {
         try {
             Statement stmt = directConnection.createStatement();
@@ -337,6 +341,7 @@ class MySqlNewFeaturesTest {
     }
     
     @Test
+    // Test case for verifying MySQL SKIP LOCKED functionality for SELECT...FOR UPDATE
     void testSkipLocked() throws SQLException {
         try {
             // Test if SKIP LOCKED syntax is supported
@@ -362,6 +367,7 @@ class MySqlNewFeaturesTest {
     }
     
     @Test
+    // Test case for verifying MySQL NOWAIT functionality for SELECT...FOR UPDATE
     void testNowait() throws SQLException {
         try {
             // Test if NOWAIT syntax is supported
@@ -382,6 +388,7 @@ class MySqlNewFeaturesTest {
     }
     
     @Test
+    // Test case for verifying MySQL JSON_TABLE function for JSON data manipulation
     void testJsonTableFunction() throws SQLException {
         try {
             Statement stmt = directConnection.createStatement();
