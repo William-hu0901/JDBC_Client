@@ -54,7 +54,33 @@ public class PostgresConnector {
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(query);
         log.info("Executed READ query: {}", query);
+        // Note: ResultSet and Statement must be closed by the caller
         return resultSet;
+    }
+    
+    /**
+     * Safe read method that executes query and returns single value
+     * Automatically handles resource cleanup
+     */
+    public int readSingleValue(String query) throws SQLException {
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+            return 0;
+        }
+    }
+    
+    /**
+     * Safe read method that executes query and returns boolean
+     * Automatically handles resource cleanup
+     */
+    public boolean readBoolean(String query) throws SQLException {
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+            return resultSet.next();
+        }
     }
 
     public void update(String query) throws SQLException {

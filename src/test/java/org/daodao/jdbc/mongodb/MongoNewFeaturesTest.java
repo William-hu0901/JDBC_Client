@@ -69,6 +69,7 @@ class MongoNewFeaturesTest {
     }
     
     @Test
+    // Test case for verifying basic change stream functionality in MongoDB
     void testChangeStreamsBasic() {
         try {
             // Simplified change stream test - just verify the method exists
@@ -94,6 +95,7 @@ class MongoNewFeaturesTest {
     }
     
     @Test
+    // Test case for verifying change stream with filtering capabilities
     void testChangeStreamWithFilter() {
         try {
             // Create change stream with filter for specific operation types
@@ -121,6 +123,7 @@ class MongoNewFeaturesTest {
     }
     
     @Test
+    // Test case for verifying time series collection creation and operations
     void testTimeSeriesCollection() {
         try {
             // Create time series collection
@@ -184,6 +187,7 @@ class MongoNewFeaturesTest {
     
     @Test
     @Disabled("Complex aggregation lookup not supported in this MongoDB version")
+    // Test case for verifying advanced aggregation operators like $facet and $lookup
     void testAdvancedAggregationOperators() {
         // Insert test data for advanced aggregation
         List<Document> salesData = Arrays.asList(
@@ -279,6 +283,7 @@ class MongoNewFeaturesTest {
     }
     
     @Test
+    // Test case for verifying enhanced retryable writes functionality
     void testEnhancedRetryableWrites() {
         try {
             // Test retryable writes with enhanced error handling
@@ -313,6 +318,7 @@ class MongoNewFeaturesTest {
     }
     
     @Test
+    // Test case for verifying wildcard index creation and usage
     void testWildcardIndexes() {
         try {
             // Create a wildcard index
@@ -361,6 +367,7 @@ class MongoNewFeaturesTest {
     }
     
     @Test
+    // Test case for verifying array update operators like $addToSet and $push
     void testArrayUpdateOperators() {
         // Insert document with arrays
         Document product = new Document("name", "Smartphone")

@@ -59,6 +59,7 @@ public class PostgresNewFeaturesTest {
     
     @Test
     @DisplayName("Test JSONB Data Type and Operations")
+    // Test case for verifying PostgreSQL JSONB data type and operations
     void testJSONBOperations() {
         if (connector == null) {
             log.warn("Skipping JSONB test - no database connection available");
@@ -102,6 +103,7 @@ public class PostgresNewFeaturesTest {
     
     @Test
     @DisplayName("Test Generated Columns")
+    // Test case for verifying PostgreSQL generated columns functionality
     void testGeneratedColumns() {
         if (connector == null) {
             log.warn("Skipping generated columns test - no database connection available");
@@ -143,6 +145,7 @@ public class PostgresNewFeaturesTest {
     
     @Test
     @DisplayName("Test UPSERT (INSERT ... ON CONFLICT)")
+    // Test case for verifying PostgreSQL UPSERT operation with INSERT...ON CONFLICT
     void testUpsertOperation() {
         if (connector == null) {
             log.warn("Skipping UPSERT test - no database connection available");
@@ -195,6 +198,7 @@ public class PostgresNewFeaturesTest {
     
     @Test
     @DisplayName("Test Array Operations")
+    // Test case for verifying PostgreSQL array operations and functions
     void testArrayOperations() {
         if (connector == null) {
             log.warn("Skipping array operations test - no database connection available");
@@ -238,6 +242,7 @@ public class PostgresNewFeaturesTest {
     
     @Test
     @DisplayName("Test Full-Text Search")
+    // Test case for verifying PostgreSQL full-text search capabilities
     void testFullTextSearch() {
         if (connector == null) {
             log.warn("Skipping full-text search test - no database connection available");
@@ -284,6 +289,7 @@ public class PostgresNewFeaturesTest {
     
     @Test
     @DisplayName("Test Window Functions")
+    // Test case for verifying PostgreSQL window functions
     void testWindowFunctions() {
         if (connector == null) {
             log.warn("Skipping window functions test - no database connection available");
@@ -341,6 +347,7 @@ public class PostgresNewFeaturesTest {
     
     @Test
     @DisplayName("Test Table Partitioning")
+    // Test case for verifying PostgreSQL table partitioning features
     void testTablePartitioning() {
         if (connector == null) {
             log.warn("Skipping table partitioning test - no database connection available");
