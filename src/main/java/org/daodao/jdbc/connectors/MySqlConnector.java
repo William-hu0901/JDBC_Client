@@ -2,17 +2,15 @@ package org.daodao.jdbc.connectors;
 
 import org.daodao.jdbc.config.MySqlConfig;
 import org.daodao.jdbc.exceptions.MySqlException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+@Slf4j
 public class MySqlConnector {
-    
-    private static final Logger log = LoggerFactory.getLogger(MySqlConnector.class);
     
     private MySqlConfig config;
     private Connection connection;

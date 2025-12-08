@@ -1,7 +1,6 @@
 package org.daodao.jdbc;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.daodao.jdbc.config.MySqlConfig;
 import org.daodao.jdbc.config.PostgresConfig;
@@ -16,9 +15,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Slf4j
 public class JdbcClientMain {
-    
-    private static final Logger log = LoggerFactory.getLogger(JdbcClientMain.class);
 
     public static void main(String[] args) {
         new JdbcClientMain().run();

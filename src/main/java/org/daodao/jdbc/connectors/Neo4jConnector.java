@@ -1,7 +1,6 @@
 package org.daodao.jdbc.connectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.daodao.jdbc.config.Neo4jConfig;
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Driver;
@@ -13,8 +12,8 @@ import org.neo4j.driver.Value;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class Neo4jConnector {
-    private static final Logger log = LoggerFactory.getLogger(Neo4jConnector.class);
     private final Driver driver;
     private final Neo4jConfig config;
 

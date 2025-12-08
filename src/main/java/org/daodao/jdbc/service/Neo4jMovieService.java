@@ -1,7 +1,6 @@
 package org.daodao.jdbc.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.daodao.jdbc.connectors.Neo4jConnector;
 import org.daodao.jdbc.model.Movie;
 import org.daodao.jdbc.model.Person;
@@ -13,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class Neo4jMovieService {
-    private static final Logger log = LoggerFactory.getLogger(Neo4jMovieService.class);
     private final Neo4jConnector connector;
 
     public Neo4jMovieService(Neo4jConnector connector) {

@@ -1,16 +1,14 @@
 package org.daodao.jdbc.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.daodao.jdbc.exceptions.PropertyException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+@Slf4j
 public class PostgresConfig {
-    
-    private static final Logger log = LoggerFactory.getLogger(PostgresConfig.class);
     private static final String PROPERTIES_FILE = "application.properties";
     
     private final String postgresHost;
