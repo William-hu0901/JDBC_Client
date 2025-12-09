@@ -9,17 +9,14 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.daodao.jdbc.config.MongoConfig;
 import org.daodao.jdbc.exceptions.MongoException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 public class MongoConnector {
-    
-    private static final Logger logger = LoggerFactory.getLogger(MongoConnector.class);
     
     private final MongoConfig config;
     private MongoClient mongoClient;
@@ -39,7 +36,7 @@ public class MongoConnector {
             mongoClient = MongoClients.create(config.getConnectionString());
             database = mongoClient.getDatabase(config.getDatabaseName());
             collection = database.getCollection(config.getCollectionName());
-            logger.info("Connected to MongoDB successfully");
+            log.info("Connected to MongoDB successfully");
         } catch (Exception e) {
             throw new MongoException("Failed to connect to MongoDB", e);
         }
@@ -48,7 +45,7 @@ public class MongoConnector {
     public void disconnect() {
         if (mongoClient != null) {
             mongoClient.close();
-            logger.info("Disconnected from MongoDB");
+            log.info("Disconnected from MongoDB");
         }
     }
     
@@ -85,7 +82,7 @@ public class MongoConnector {
             collection.createIndex(new Document("email", 1));
             collection.createIndex(new Document("age", 1));
             
-            logger.info("Database initialized with sample data and indexes");
+            log.info("Database initialized with sample data and indexes");
         } catch (Exception e) {
             throw new MongoException("Failed to initialize database", e);
         }

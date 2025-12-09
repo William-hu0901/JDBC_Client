@@ -1,7 +1,6 @@
 package org.daodao.jdbc;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.daodao.jdbc.config.Neo4jConfig;
 import org.daodao.jdbc.connectors.Neo4jConnector;
 import org.daodao.jdbc.model.Movie;
@@ -9,8 +8,8 @@ import org.daodao.jdbc.model.Person;
 import org.daodao.jdbc.service.Neo4jDatabaseInitializer;
 import org.daodao.jdbc.service.Neo4jMovieService;
 
+@Slf4j
 public class Neo4jMainApplication {
-    private static final Logger log = LoggerFactory.getLogger(Neo4jMainApplication.class);
     public static void main(String[] args) {
         try {
             Neo4jConfig config = new Neo4jConfig();
