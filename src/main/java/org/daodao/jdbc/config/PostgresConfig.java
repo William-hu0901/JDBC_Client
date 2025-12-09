@@ -74,4 +74,29 @@ public class PostgresConfig {
     public String getPostgresSql() {
         return postgresSql;
     }
+    
+    // Convenience methods for PostgresConnector compatibility
+    public String getHost() {
+        return postgresHost;
+    }
+    
+    public int getPort() {
+        return postgresPort;
+    }
+    
+    public String getDatabase() {
+        return postgresDatabase;
+    }
+    
+    public String getUsername() {
+        return postgresUsername;
+    }
+    
+    public String getPassword() {
+        return postgresPassword;
+    }
+    
+    public String getJdbcUrl() {
+        return String.format("jdbc:postgresql://%s:%d/%s?sslmode=prefer", postgresHost, postgresPort, postgresDatabase);
+    }
 }

@@ -88,6 +88,23 @@
             <version>1.10.0</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- MyBatis dependencies -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.5.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-typehandlers-jsr310</artifactId>
+            <version>1.0.2</version>
+        </dependency>
     </dependencies>
 
     <build>

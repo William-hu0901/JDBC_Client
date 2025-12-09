@@ -25,8 +25,8 @@ public class JdbcClientMain {
     private void run() {
         try {
             actionOnMySQL();
-//            actionOnPostgres();
-//            actionOnMongoDB();
+            actionOnPostgres();
+            actionOnMongoDB();
         } catch (Exception e) {
             log.error("Application error: ", e);
         }
@@ -49,10 +49,10 @@ public class JdbcClientMain {
             log.info("Total documents in database: {}", allDocuments.size());
             
             for (Document doc : allDocuments) {
-                log.info("Document: Name={}, Email={}, Age={}, City={}", 
+                log.info("Document: Name={}, Email={}, Age={}, City={}",
                         doc.getString("name"), 
                         doc.getString("email"), 
-                        doc.getInteger("age"), 
+                        doc.getInteger("age"),
                         doc.getString("city"));
             }
             
@@ -100,7 +100,7 @@ public class JdbcClientMain {
             try (ResultSet resultSet = postgresConnector.read(config.getPostgresSql())) {
                 int count = 0;
                 while (resultSet.next() && count < 2) {
-                    log.info("User ID: {}, Name: {}", resultSet.getInt("user_id"), resultSet.getString("username"));
+                    log.info("User ID: {}, Name: {}", resultSet.getInt("id"), resultSet.getString("username"));
                     count++;
                 }
             }

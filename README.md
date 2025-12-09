@@ -189,22 +189,11 @@ src/main/java/org/daodao/jdbc/
 
 src/test/java/org/daodao/jdbc/
 ├── connectors/
-│   └── PostgresConnectorTest.java   # PostgreSQL integration tests
-├── mysql/
-│   ├── MySqlBasicCRUDTest.java       # Basic CRUD operations
-│   ├── MySqlNewFeaturesTest.java     # MySQL 8.0+ new features testing
-│   ├── MySqlSecurityPerformanceTest.java # Security and Performance features
-│   ├── MySqlConnectorMockitoTest.java  # Unit tests with Mockito
-│   ├── MySqlSimpleTest.java          # Basic infrastructure test
-│   └── TestSuite.java               # MySQL test suite
-├── mongodb/
-│   ├── MongoBasicCRUDTest.java       # Basic CRUD operations
-│   ├── MongoIndexingAggregationTest.java # Indexing and aggregation
-│   ├── MongoTransactionTest.java      # Transaction testing
-│   ├── MongoNewFeaturesTest.java       # Latest MongoDB features
-│   ├── MongoConnectorMockitoTest.java  # Unit tests with Mockito
-│   ├── MongoSimpleTest.java          # Basic infrastructure test
-│   └── TestSuite.java               # Test suite orchestrator
+│   ├── MongoConnectorTest.java       # MongoDB integration tests
+│   ├── PostgresConnectorTest.java    # PostgreSQL integration tests
+│   └── MySqlConnectorTest.java      # MySQL integration tests
+├── concurrent/
+│   └── ConcurrentDatabaseTest.java   # Concurrent database operations tests
 ├── neo4j/
 │   ├── Neo4jCRUDTest.java           # Legacy Neo4j CRUD operations testing
 │   ├── Neo4jBasicFunctionalityTest.java # Comprehensive basic functionality tests
@@ -285,21 +274,12 @@ mvn -Dtoolchain.skip=false test
 
 #### MySQL Tests
 ```bash
-mvn test -Dtest=MySqlBasicCRUDTest
-mvn test -Dtest=MySqlNewFeaturesTest
-mvn test -Dtest=MySqlSecurityPerformanceTest
-mvn test -Dtest=MySqlSimpleTest
-mvn test -Dtest=org.daodao.jdbc.mysql.TestSuite
+mvn test -Dtest=MySqlConnectorTest
 ```
 
 #### MongoDB Tests
 ```bash
-mvn test -Dtest=MongoBasicCRUDTest
-mvn test -Dtest=MongoIndexingAggregationTest
-mvn test -Dtest=MongoTransactionTest
-mvn test -Dtest=MongoNewFeaturesTest
-mvn test -Dtest=MongoSimpleTest
-mvn test -Dtest=org.daodao.jdbc.mongodb.TestSuite
+mvn test -Dtest=MongoConnectorTest
 ```
 
 #### PostgreSQL Tests
@@ -358,32 +338,19 @@ mvn test -Dtest=Neo4jTestRunner
 
 #### MongoDB Test Coverage
 
-**Total Tests**: 38 tests total
-- **36 tests passed** (94.7% pass rate)
-- **6 tests skipped** (due to feature limitations)
-- **0 test failures**
-
-**Categories**:
-1. **MongoBasicCRUDTest**: Core MongoDB functionality
-2. **MongoIndexingAggregationTest**: Indexing and aggregation operations
-3. **MongoTransactionTest**: ACID transaction testing
-4. **MongoNewFeaturesTest**: Latest MongoDB production features
-5. **MongoConnectorMockitoTest**: Unit testing with mocked dependencies
+**MongoConnectorTest**: Basic MongoDB integration tests
+- Connection testing
+- Database initialization
+- Document CRUD operations
+- Query operations with filters
+- Error handling and graceful test skipping
 
 #### MySQL Test Coverage
 
-**Total Tests**: 16+ tests total across multiple test classes
-- **16 tests passed** in basic test suite (100% pass rate)
-- **Additional new features tests** covering MySQL 8.0+ capabilities
-- **0 test failures**
-- **Some tests skipped gracefully** when MySQL features are not available
-
-**Categories**:
-1. **MySqlSimpleTest**: Configuration and setup validation
-2. **MySqlBasicCRUDTest**: Core MySQL functionality and CRUD operations
-3. **MySqlNewFeaturesTest**: MySQL 8.0+ new features
-4. **MySqlSecurityPerformanceTest**: Security and Performance features
-5. **MySqlConnectorMockitoTest**: Unit testing with mocked dependencies
+**MySqlConnectorTest**: Basic MySQL integration tests
+- Connection testing and validation
+- Basic CRUD operations
+- Error handling with proper test assumptions
 
 #### PostgreSQL Test Coverage
 
@@ -429,21 +396,17 @@ mvn -Dtoolchain.skip=false clean package
 ### Database Features
 
 #### MySQL Features
-- Automatic database initialization
-- Schema, table, and index creation
-- View creation for data summarization
-- Prepared statements for security
-- Connection pooling and timeout handling
-- MySQL 8.0+ new features testing
+- Connection testing and validation
+- Basic CRUD operations with prepared statements
+- Error handling and connection management
+- Support for integration testing with proper setup
 
 #### MongoDB Features
-- Automatic database initialization
-- Index creation (single, compound, text, unique)
-- Aggregation pipelines (group, sort, limit, project, unwind, lookup)
-- Transaction support with rollback and retry
-- Change streams monitoring
-- Time series collections
-- Advanced array update operators
+- Connection testing and validation
+- Document CRUD operations
+- Database initialization when empty
+- Query operations with email and age filters
+- Graceful handling of unavailable MongoDB instances
 
 #### PostgreSQL Features
 - Table creation with various data types
