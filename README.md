@@ -1,6 +1,6 @@
 # JDBC_Client
 
-This is a Client to connect with different databases such as MySQL, PostgreSQL, Oracle, MongoDB, and Neo4j with given parameters.
+This is a Client to connect with different databases such as MySQL, PostgreSQL, MongoDB, and Neo4j with given parameters.
 
 ## Project Features
 
@@ -10,6 +10,7 @@ This is a Client to connect with different databases such as MySQL, PostgreSQL, 
 - **Comprehensive Testing**: Extensive test coverage with integration and unit tests
 - **Logging**: SLF4J with Logback for proper logging
 - **Configuration**: External configuration via application.properties
+- **Concurrent Operations**: Thread-safe connection pooling and concurrent database operations
 
 ## Connection Examples
 
@@ -161,7 +162,7 @@ neo4j.database=neo4j
 
 ```
 src/main/java/org/daodao/jdbc/
-├── JdbcClientMain.java          # Main application entry point
+├── JdbcClientMain.java          # Main application entry point (includes concurrent operations demo)
 ├── Neo4jMainApplication.java    # Neo4j application entry point
 ├── config/
 │   ├── MySqlConfig.java         # MySQL configuration
@@ -179,35 +180,34 @@ src/main/java/org/daodao/jdbc/
 │   ├── PropertyException.java   # Property loading exceptions
 │   └── MongoException.java      # MongoDB exceptions
 ├── model/
-│   ├── Movie.java               # Movie data model
-│   └── Person.java              # Person data model
+│   ├── User.java               # User data model
+│   ├── Movie.java              # Movie data model
+│   └── Person.java             # Person data model
+├── pool/
+│   ├── ConnectionPool.java     # Generic connection pool implementation
+│   ├── MySqlConnectionPool.java # MySQL connection pool
+│   ├── PostgresConnectionPool.java # PostgreSQL connection pool
+│   └── DatabaseThreadPoolManager.java # Thread pool manager for concurrent operations
 ├── service/
+│   ├── ConcurrentDatabaseService.java # Concurrent database operations service
 │   ├── Neo4jDatabaseInitializer.java # Neo4j database initialization
 │   └── Neo4jMovieService.java   # Neo4j movie CRUD service
+├── mapper/
+│   ├── MySqlUserMapper.java    # MySQL MyBatis mapper
+│   └── PostgresUserMapper.java # PostgreSQL MyBatis mapper
 └── util/
     └── Constants.java            # Application constants
 
 src/test/java/org/daodao/jdbc/
-├── connectors/
-│   ├── MongoConnectorTest.java       # MongoDB integration tests
-│   ├── PostgresConnectorTest.java    # PostgreSQL integration tests
-│   └── MySqlConnectorTest.java      # MySQL integration tests
 ├── concurrent/
-│   └── ConcurrentDatabaseTest.java   # Concurrent database operations tests
-├── neo4j/
-│   ├── Neo4jCRUDTest.java           # Legacy Neo4j CRUD operations testing
-│   ├── Neo4jBasicFunctionalityTest.java # Comprehensive basic functionality tests
-│   ├── Neo4jNewFeaturesTest.java     # Latest Neo4j production features
-│   ├── Neo4jTestSuite.java         # Main test suite with logging
-│   └── Neo4jTestRunner.java         # Simple test runner
-└── postgres/
-    ├── PostgresBasicCRUDTest.java    # Basic CRUD operations
-    ├── PostgresIndexingTest.java     # Index creation and management
-    ├── PostgresTransactionTest.java   # ACID transaction testing
-    ├── PostgresNewFeaturesTest.java   # Latest PostgreSQL features
-    ├── PostgresConnectorMockitoTest.java # Unit tests with Mockito
-    ├── PostgresSimpleTest.java        # Basic infrastructure test
-    └── TestSuite.java                # PostgreSQL test suite
+│   ├── BasicConcurrentTest.java       # Basic concurrent database operations tests
+│   ├── SimplifiedConcurrentTest.java  # Simplified concurrent operations tests
+│   ├── ConcurrentDatabaseTest.java     # Full concurrent database operations tests
+│   └── TestSuite.java                 # Concurrent test suite
+└── connectors/
+    ├── MongoConnectorTest.java        # MongoDB integration tests
+    ├── PostgresConnectorTest.java     # PostgreSQL integration tests
+    └── MySqlConnectorTest.java        # MySQL integration tests
 ```
 
 ## Running the Application
@@ -253,7 +253,7 @@ mvn toolchain:toolchain
 mvn -Dtoolchain.skip=false clean compile
 
 # Run tests with toolchain
-mvn -Dtoolchain.skip=false test -Dtest=Neo4jTestSuite
+mvn -Dtoolchain.skip=false test -Dtest=org.daodao.jdbc.concurrent.TestSuite
 
 # Build entire project with toolchain
 mvn -Dtoolchain.skip=false clean package
@@ -270,6 +270,17 @@ mvn test
 mvn -Dtoolchain.skip=false test
 ```
 
+### Concurrent Database Tests
+```bash
+# Run concurrent test suite
+mvn test -Dtest=org.daodao.jdbc.concurrent.TestSuite
+
+# Run individual concurrent test classes
+mvn test -Dtest=org.daodao.jdbc.concurrent.BasicConcurrentTest
+mvn test -Dtest=org.daodao.jdbc.concurrent.SimplifiedConcurrentTest
+mvn test -Dtest=org.daodao.jdbc.concurrent.ConcurrentDatabaseTest
+```
+
 ### Database-Specific Tests
 
 #### MySQL Tests
@@ -284,12 +295,7 @@ mvn test -Dtest=MongoConnectorTest
 
 #### PostgreSQL Tests
 ```bash
-mvn test -Dtest=PostgresBasicCRUDTest
-mvn test -Dtest=PostgresIndexingTest
-mvn test -Dtest=PostgresTransactionTest
-mvn test -Dtest=PostgresNewFeaturesTest
-mvn test -Dtest=PostgresSimpleTest
-mvn test -Dtest=org.daodao.jdbc.postgres.TestSuite
+mvn test -Dtest=PostgresConnectorTest
 ```
 
 #### Neo4j Tests
@@ -305,60 +311,6 @@ mvn test -Dtest=Neo4jNewFeaturesTest
 # Quick test runner
 mvn test -Dtest=Neo4jTestRunner
 ```
-
-### Test Categories
-
-#### Neo4j Test Coverage
-
-**Neo4jCRUDTest**: Legacy Neo4j CRUD operations testing
-- Basic node and relationship operations
-- Movie and person management
-- Database initialization
-
-**Neo4jBasicFunctionalityTest**: Comprehensive basic functionality tests (15+ test cases)
-- Node creation and retrieval operations
-- Relationship management (ACTED_IN, DIRECTED)
-- Graph traversal and path finding
-- Data updates and deletions with transaction handling
-- Complex Cypher queries with filtering and aggregation
-
-**Neo4jNewFeaturesTest**: Latest Neo4j production features (10+ test cases)
-- Multi-database operations and switching
-- Advanced Cypher features (subqueries, pattern comprehensions)
-- Index and constraint management
-- Transaction management with multiple operations
-- Performance optimization queries
-
-**Neo4jTestSuite**: Main test suite with comprehensive logging and orchestration
-- Coordinated test execution
-- Proper setup and cleanup
-- Logging and monitoring
-
-**Test Results**: 25+ tests across multiple test classes with high success rate
-
-#### MongoDB Test Coverage
-
-**MongoConnectorTest**: Basic MongoDB integration tests
-- Connection testing
-- Database initialization
-- Document CRUD operations
-- Query operations with filters
-- Error handling and graceful test skipping
-
-#### MySQL Test Coverage
-
-**MySqlConnectorTest**: Basic MySQL integration tests
-- Connection testing and validation
-- Basic CRUD operations
-- Error handling with proper test assumptions
-
-#### PostgreSQL Test Coverage
-
-**Total Tests**: 38 tests
-- **Pass Rate**: 100% (38/38 tests pass)
-- **Coverage**: All major PostgreSQL features tested
-- **Compatibility**: Tests handle connection failures gracefully
-- **Data Management**: Tests include proper cleanup to avoid data accumulation
 
 ## Java21 Toolchain Support
 
@@ -447,6 +399,7 @@ mvn -Dtoolchain.skip=false clean package
 - Java21 compatibility with Maven toolchains
 - Comprehensive test coverage
 - Parallel compilation support
+- Concurrent database operations with thread-safe connection pooling
 
 ## Troubleshooting
 
@@ -492,7 +445,7 @@ mvn toolchain:toolchain
 mvn compile -Dtoolchain.skip=false
 
 # Run specific test
-mvn test -Dtest=Neo4jTestSuite -Dtoolchain.skip=false
+mvn test -Dtest=org.daodao.jdbc.concurrent.TestSuite -Dtoolchain.skip=false
 ```
 
 ## License
